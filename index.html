@@ -134,7 +134,7 @@ textarea.field{resize:vertical;min-height:70px}
   <div class="panelHead">头像与名称 <button class="close" data-close>×</button></div>
   <label>你的昵称</label><input class="field" id="myName" placeholder="例如：小青柠">
   <label>你的头像图片链接（可留空）</label><input class="field" id="myAvatarUrl" placeholder="https://……">
-  <label>或从手机相册选择你的头像</label><input class="field" id="myAvatarFile" class="field" type="file" accept="image/*">
+  <label>或从手机相册选择你的头像</label><input class="field" id="myAvatarFile" type="file" accept="image/*">
   <label>你的默认头像表情</label><input class="field" id="myAvatarEmoji" placeholder="🍋">
   <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
   <label>对方的昵称</label><input class="field" id="otherName" placeholder="例如：小猪">
@@ -323,11 +323,10 @@ function renderCards(){
     const title=document.createElement("div");title.className="cardTitle";title.textContent=(c.title||"未命名字卡")+" · "+(c.group||"日常");
     const txt=document.createElement("div");txt.className="cardText";txt.textContent=c.text;
     const btns=document.createElement("div");btns.className="cardBtns";
-    const use=document.createElement("button");use.textContent="自己发送";
-    use.onclick=()=>{addMessage(c.text,"me");hidePanels();};
     const del=document.createElement("button");del.textContent="删除";
     del.onclick=()=>{if(confirm("删除这张字卡？")){d.cards.splice(i,1);save();renderCards()}};
-    btns.append(use,del);box.append(title,txt,btns);list.appendChild(box);
+    btns.append(del);
+    box.append(title,txt,btns);list.appendChild(box);
   });
 }
 function renderEmojis(){
@@ -376,10 +375,8 @@ function sendTransfer(){
   if(!Number.isFinite(amount)||amount<=0){alert("请输入有效金额");return}
   addMessage($("transferNote").value.trim()||"心意已送达","me",{type:"transfer",amount,status:"已发送"});
   $("amount").value="";$("transferNote").value="";hidePanels();
-  // 对方是否接受由模拟对象随机决定，不由用户替对方点击
   setTimeout(()=>{
     const accepted=Math.random()<.75;
-    const msg=d.messages.findLast?d.messages.findLast(m=>m.type==="transfer"&&m.who==="me"):null;
     if(accepted)addMessage("对方已收取这份心意 💛","other");
     else addMessage("对方暂时没有收取这份心意。","other");
   },2000+Math.random()*3000);
@@ -439,7 +436,6 @@ $("sendLetter").onclick=()=>{
 $("startOutgoing").onclick=()=>{hidePanels();openCall("calling")};
 $("minimizeCall").onclick=()=>{$("callMini").classList.add("hidden");callHidden=true};
 
-// 将图片选择、主题和概率设置恢复到保存值
 document.body.dataset.theme=d.theme||"dark";
 $("replyProb").value=d.replyProb;$("activeProb").value=d.activeProb;
 $("replyLabel").textContent=d.replyProb+"%";$("activeLabel").textContent=d.activeProb+"%";
