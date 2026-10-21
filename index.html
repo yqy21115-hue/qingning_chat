@@ -1,67 +1,201 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>青柠私语</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#000;color:#eee;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}.app{height:100dvh;max-width:600px;margin:auto;display:flex;flex-direction:column;position:relative;background:#000}header{height:94px;flex-shrink:0;display:flex;align-items:center;justify-content:space-around;text-align:center;border-bottom:1px solid #222}header button{border:0;background:none;color:#168cff;font-size:27px}.avatar{width:48px;height:48px;border-radius:50%;background:#303033;display:grid;place-items:center;margin:auto;font-size:24px;overflow:hidden}.avatar img,.face img,.callAvatar img{width:100%;height:100%;object-fit:cover}.name{margin-top:5px;color:#aaa}.chat{flex:1;overflow-y:auto;padding:12px}.msg{display:flex;margin:15px 0;align-items:flex-start;gap:8px}.msg.me{justify-content:flex-end}.face{width:29px;height:29px;border-radius:50%;background:#303033;display:grid;place-items:center;flex-shrink:0;overflow:hidden}.bubble{max-width:82%;background:#29292b;color:#ddd;padding:10px 13px;border-radius:17px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.me .bubble{background:#168cff;color:white}.time{font-size:10px;color:#999;margin-top:4px}.bar{display:flex;gap:5px;align-items:center;padding:9px 7px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #202023}.tool{border:0;background:none;color:#aaa;font-size:21px;padding:6px}#input{flex:1;min-width:0;border:1px solid #444;background:#1d1d1f;color:white;border-radius:25px;padding:12px;outline:none}#send{width:42px;height:42px;border:0;border-radius:50%;background:#168cff;color:white;font-size:23px}.panel{position:absolute;z-index:5;bottom:75px;left:9px;right:9px;max-height:77%;overflow:auto;background:#252527;border-radius:18px;padding:16px;box-shadow:0 0 0 100vmax #0009}.hidden{display:none!important}.head{display:flex;justify-content:space-between;align-items:center;font-weight:bold;margin-bottom:14px}.close{border:0;background:none;color:#aaa;font-size:24px}.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.mod{border:0;background:none;color:#bbb;padding:9px 2px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px}.ico{width:49px;height:49px;border-radius:50%;background:#39393b;display:grid;place-items:center;font-size:22px}label{display:block;color:#bbb;font-size:13px;margin:12px 0 5px}.field{width:100%;margin-top:6px;padding:11px;border:1px solid #454548;border-radius:9px;background:#151516;color:#eee;outline:none}textarea.field{min-height:75px;resize:vertical}.btn{width:100%;border:0;border-radius:9px;padding:12px;background:#168cff;color:white;margin-top:10px}.note{font-size:12px;color:#999;line-height:1.6}.item{padding:10px 0;border-bottom:1px solid #414144;display:flex;gap:8px;align-items:center}.item span{flex:1;overflow-wrap:anywhere;font-size:13px}.item button{background:#414144;border:0;color:white;border-radius:7px;padding:7px}.emojiGrid{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.emojiItem{border:1px solid #444;background:#303033;color:white;border-radius:9px;padding:9px;font-size:22px}
-/* 美化后的转账卡片 */
-.transfer{width:min(270px,72vw);padding:0;overflow:hidden;border-radius:15px;background:linear-gradient(135deg,#f7c86d,#efa947);color:#60451e;box-shadow:0 5px 18px #0005}.transferTop{display:flex;align-items:center;gap:10px;padding:16px 15px 13px}.transferIcon{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;border:2px solid #fff9;color:white;font-size:25px}.transferTitle{font-size:13px;opacity:.95}.money{font-size:29px;font-weight:700;margin-top:5px;letter-spacing:.3px;color:#35260e}.transferNote{padding:0 16px 15px;font-size:12px;opacity:.95;overflow-wrap:anywhere}.transferBottom{background:#fff2dc;color:#94662b;padding:11px 14px;font-size:12px}.transferActions{display:flex;gap:8px;padding:0 13px 13px;background:#fff2dc}.transferActions button{flex:1;border:0;border-radius:9px;padding:9px 4px;font-size:12px}.transferActions .accept{background:#e99a32;color:white}.transferActions button:not(.accept){background:#f0e0c8;color:#805a32}
-.callOverlay{position:absolute;inset:0;z-index:10;background:#111;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:25px}.callAvatar{width:100px;height:100px;border-radius:50%;background:#333;display:grid;place-items:center;font-size:46px;overflow:hidden;margin-bottom:18px}.callState{color:#aaa;margin:12px}.callButtons{display:flex;gap:24px;margin-top:48px}.callBtn{width:62px;height:62px;border:0;border-radius:50%;color:white;font-size:24px}.red{background:#e74444}.green{background:#20a45a}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:#eee;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.app{height:100dvh;max-width:600px;margin:auto;display:flex;flex-direction:column;position:relative;background:#000}
+header{height:100px;flex-shrink:0;display:flex;align-items:center;justify-content:space-around;text-align:center}
+header button{border:0;background:none;color:#168cff;font-size:27px}
+.avatar{width:48px;height:48px;border-radius:50%;background:#303033;display:grid;place-items:center;margin:auto;font-size:24px;overflow:hidden}
+.avatar img,.face img,.callAvatar img{width:100%;height:100%;object-fit:cover}
+.name{margin-top:5px;color:#aaa}
+.chat{flex:1;overflow-y:auto;padding:12px}
+.msg{display:flex;margin:15px 0;align-items:flex-start;gap:8px}.msg.me{justify-content:flex-end}
+.face{width:30px;height:30px;border-radius:50%;background:#303033;display:grid;place-items:center;flex-shrink:0;overflow:hidden}
+.bubble{max-width:82%;background:#29292b;color:#ddd;padding:10px 13px;border-radius:17px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.me .bubble{background:#168cff;color:white}.time{font-size:10px;color:#999;margin-top:4px}
+.bar{display:flex;gap:5px;align-items:center;padding:9px 7px calc(12px + env(safe-area-inset-bottom))}
+.tool{border:0;background:none;color:#aaa;font-size:21px;padding:6px}
+#input{flex:1;min-width:0;border:1px solid #444;background:#1d1d1f;color:white;border-radius:25px;padding:12px;outline:none}
+#send{width:42px;height:42px;border:0;border-radius:50%;background:#168cff;color:white;font-size:23px}
+.panel{position:absolute;z-index:5;bottom:75px;left:9px;right:9px;max-height:77%;overflow:auto;background:#252527;border-radius:18px;padding:16px;box-shadow:0 0 0 100vmax #0009}
+.hidden{display:none!important}.head{display:flex;justify-content:space-between;align-items:center;font-weight:bold;margin-bottom:14px}
+.close{border:0;background:none;color:#aaa;font-size:24px}
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.mod{border:0;background:none;color:#bbb;padding:9px 2px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px}
+.ico{width:49px;height:49px;border-radius:50%;background:#39393b;display:grid;place-items:center;font-size:22px}
+label{display:block;color:#bbb;font-size:13px;margin:12px 0 5px}
+.field{width:100%;margin-top:6px;padding:11px;border:1px solid #454548;border-radius:9px;background:#151516;color:#eee;outline:none}
+textarea.field{min-height:75px;resize:vertical}.btn{width:100%;border:0;border-radius:9px;padding:12px;background:#168cff;color:white;margin-top:10px}
+.note{font-size:12px;color:#999;line-height:1.6}.item{padding:10px 0;border-bottom:1px solid #414144;display:flex;gap:8px;align-items:center}
+.item span{flex:1;overflow-wrap:anywhere;font-size:13px}.item button{background:#414144;border:0;color:white;border-radius:7px;padding:7px}
+.emojiGrid{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.emojiItem{border:1px solid #444;background:#303033;color:white;border-radius:9px;padding:9px;font-size:22px}
+.transfer{width:min(270px,72vw);padding:0;overflow:hidden;border-radius:15px;background:#f5a94d;color:#fff;box-shadow:0 5px 18px #0003}
+.transferTop{display:flex;align-items:center;gap:10px;padding:16px 15px 13px}
+.transferIcon{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;border-radius:12px;background:#ffffff30;font-size:25px}
+.transferTitle{font-size:13px;opacity:.95}.money{font-size:29px;font-weight:650;margin-top:5px;letter-spacing:.3px}
+.transferNote{padding:0 16px 15px;font-size:12px;opacity:.95;overflow-wrap:anywhere}
+.transferBottom{background:#fff2dc;color:#94662b;padding:11px 14px;font-size:12px}
+.callOverlay{position:absolute;inset:0;z-index:10;background:#111;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:25px}
+.callAvatar{width:100px;height:100px;border-radius:50%;background:#333;display:grid;place-items:center;font-size:46px;overflow:hidden;margin-bottom:18px}
+.callState{color:#aaa;margin:12px}.callButtons{display:flex;gap:24px;margin-top:48px}
+.callBtn{width:62px;height:62px;border:0;border-radius:50%;color:white;font-size:24px}.red{background:#e74444}.green{background:#20a45a}
 </style>
 </head>
-<body><div class="app">
+<body>
+<div class="app">
 <header><button id="back">‹</button><div><div class="avatar" id="avatarView">🐺</div><div class="name" id="nameView">小猪 ›</div></div><button id="openModules">▦</button></header>
 <main class="chat" id="chat"></main>
-<footer class="bar"><button class="tool" id="openModules2">▱</button><button class="tool" id="openLetter">✉</button><button class="tool" id="openEmoji">☺</button><button class="tool" id="callMe">☎</button><input id="input" autocomplete="off" placeholder="输入消息…"><button id="send">↑</button></footer>
-<section class="panel hidden" id="modules"><div class="head">功能菜单<button class="close" data-close>×</button></div><div class="modules">
-<button class="mod" data-panel="settings"><span class="ico">⚙</span>设置</button><button class="mod" data-panel="cardsPanel"><span class="ico">▤</span>字卡库</button><button class="mod" data-panel="transferPanel"><span class="ico">￥</span>转账给对方</button><button class="mod" data-panel="letterPanel"><span class="ico">✉</span>写信</button><button class="mod" data-panel="emojiPanel"><span class="ico">☺</span>表情管理</button>
-</div></section>
-<section class="panel hidden" id="settings"><div class="head">互动设置<button class="close" data-close>×</button></div>
+<footer class="bar">
+<button class="tool" id="openModules2">▱</button><button class="tool" id="openLetter">✉</button><button class="tool" id="openEmoji">☺</button><button class="tool" id="callMe">☎</button>
+<input id="input" autocomplete="off" placeholder="发消息…"><button id="send">↑</button>
+</footer>
+
+<section class="panel hidden" id="modules">
+<div class="head">功能菜单<button class="close" data-close>×</button></div>
+<div class="modules">
+<button class="mod" data-panel="settings"><span class="ico">⚙</span>双方资料与设置</button>
+<button class="mod" data-panel="cardsPanel"><span class="ico">▤</span>字卡库</button>
+<button class="mod" data-panel="transferPanel"><span class="ico">￥</span>转账给对方</button>
+<button class="mod" data-panel="letterPanel"><span class="ico">✉</span>写信</button>
+<button class="mod" data-panel="emojiPanel"><span class="ico">☺</span>表情管理</button>
+</div>
+</section>
+
+<section class="panel hidden" id="settings">
+<div class="head">双方资料与互动设置<button class="close" data-close>×</button></div>
+<label>对方名称</label><input class="field" id="sName" placeholder="小猪">
+<label>对方头像表情</label><input class="field" id="sAvatar" placeholder="🐺">
+<label>对方头像图片链接（可选）</label><input class="field" id="sAvatarUrl" placeholder="https://...">
+<label>我的名称</label><input class="field" id="myName" placeholder="我">
+<label>我的头像表情</label><input class="field" id="myAvatar" placeholder="🙂">
+<label>我的头像图片链接（可选）</label><input class="field" id="myAvatarUrl" placeholder="https://...">
 <label>你发消息后，对方回复概率：<span id="replyLabel">75%</span></label><input class="field" id="replyProb" type="range" min="0" max="100" value="75">
 <label>对方主动发消息概率：<span id="activeLabel">20%</span></label><input class="field" id="activeProb" type="range" min="0" max="100" value="20">
-<button class="btn" id="saveSettings">保存设置</button><p class="note">转账和来电会自动随机触发；所有互动均为本地模拟，不涉及真实转账或电话。</p></section>
-<section class="panel hidden" id="cardsPanel"><div class="head">字卡库<button class="close" data-close>×</button></div><label>字卡名称</label><input class="field" id="cardTitle" placeholder="撒娇"><label>字卡内容</label><textarea class="field" id="cardText" placeholder="宝宝，抱抱我"></textarea><button class="btn" id="addCard">＋ 添加字卡</button><div id="cardList"></div></section>
-<section class="panel hidden" id="transferPanel"><div class="head">给对方转账<button class="close" data-close>×</button></div><label>金额</label><input class="field" id="amount" type="number" min="0.01" step="0.01" placeholder="自行输入金额"><label>留言</label><input class="field" id="transferNote" placeholder="给你买奶茶"><button class="btn" id="sendTransfer">发送转账</button></section>
-<section class="panel hidden" id="letterPanel"><div class="head">写信<button class="close" data-close>×</button></div><label>信件标题</label><input class="field" id="letterTitle" placeholder="写给你"><label>信件内容</label><textarea class="field" id="letterText" placeholder="想说的话……"></textarea><button class="btn" id="sendLetter">发送回信</button></section>
-<section class="panel hidden" id="emojiPanel"><div class="head">我的小表情<button class="close" data-close>×</button></div><div class="emojiGrid" id="emojiGrid"></div><label>添加表情</label><input class="field" id="newEmoji" placeholder="🥺 或 (｡•́︿•̀｡)"><button class="btn" id="addEmoji">＋ 添加表情</button></section>
-<section class="callOverlay hidden" id="callScreen"><div class="callAvatar" id="callAvatar">🐺</div><div id="callName" style="font-size:24px">小猪</div><div class="callState" id="callState">来电中……</div><div class="callButtons" id="callButtons"></div></section>
+<button class="btn" id="saveSettings">保存设置</button>
+<p class="note">其他互动由系统随机模拟，不需要你手动点击对方行动。所有转账和电话均为虚拟效果。</p>
+</section>
+
+<section class="panel hidden" id="cardsPanel">
+<div class="head">字卡库<button class="close" data-close>×</button></div>
+<label>字卡名称</label><input class="field" id="cardTitle" placeholder="撒娇">
+<label>字卡内容</label><textarea class="field" id="cardText" placeholder="宝宝，抱抱我"></textarea>
+<button class="btn" id="addCard">＋ 添加字卡</button><div id="cardList"></div>
+</section>
+<section class="panel hidden" id="transferPanel">
+<div class="head">给对方转账<button class="close" data-close>×</button></div>
+<label>金额</label><input class="field" id="amount" type="number" min="0.01" step="0.01" placeholder="输入金额">
+<label>留言</label><input class="field" id="transferNote" placeholder="给你买奶茶">
+<button class="btn" id="sendTransfer">发送转账</button>
+</section>
+<section class="panel hidden" id="letterPanel">
+<div class="head">写信<button class="close" data-close>×</button></div>
+<label>信件标题</label><input class="field" id="letterTitle" placeholder="写给你">
+<label>信件内容</label><textarea class="field" id="letterText" placeholder="想说的话……"></textarea>
+<button class="btn" id="sendLetter">发送回信</button>
+</section>
+<section class="panel hidden" id="emojiPanel">
+<div class="head">我的小表情<button class="close" data-close>×</button></div><div class="emojiGrid" id="emojiGrid"></div>
+<label>添加表情</label><input class="field" id="newEmoji" placeholder="🥺 或 (｡•́︿•̀｡)"><button class="btn" id="addEmoji">＋ 添加表情</button>
+</section>
+<section class="callOverlay hidden" id="callScreen">
+<div class="callAvatar" id="callAvatar">🐺</div><div id="callName" style="font-size:24px">小猪</div><div class="callState" id="callState">来电中……</div><div class="callButtons" id="callButtons"></div>
+</section>
 </div>
 <script>
-(function(){"use strict";function $(id){return document.getElementById(id)}
-var KEY="qingning_fixed_v5";var defaults={name:"小猪",avatar:"🐺",avatarUrl:"",cards:[{title:"想你",text:"宝宝，我想你了"},{title:"抱抱",text:"快来抱抱我"},{title:"撒娇",text:"我要抱抱"},{title:"喜欢",text:"好喜欢你"},{title:"日常",text:"宝宝在干嘛呢？"}],emojis:["❤️","🥺","😘","🫂","💕","🌙","🍎"],messages:[],replyProb:75,activeProb:20,moneyProb:8,minMoney:10,maxMoney:200,callProb:8,callbackProb:45,interval:30,autoReply:true,autoAction:true};var d=JSON.parse(JSON.stringify(defaults));
-try{var old=JSON.parse(localStorage.getItem(KEY)||"null");if(old&&Array.isArray(old.cards)&&Array.isArray(old.messages))Object.keys(old).forEach(function(k){d[k]=old[k]})}catch(e){}
-d.autoReply=true;d.autoAction=true;var timer=null,callState="idle",callTimer=null;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){alert("存储空间不足，请备份数据。")}}
-function hidePanels(){document.querySelectorAll(".panel").forEach(function(p){p.classList.add("hidden")})}function show(id){hidePanels();$(id).classList.remove("hidden")}
-function stamp(){return new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"})}
-function setAvatar(el){el.replaceChildren();if(d.avatarUrl){var img=document.createElement("img");img.src=d.avatarUrl;img.onerror=function(){el.textContent=d.avatar||"🐺"};el.appendChild(img)}else el.textContent=d.avatar||"🐺"}
-function addMessage(text,who,extra){var m={id:Date.now()+Math.random(),text:text,who:who||"them",time:stamp()};if(extra)Object.keys(extra).forEach(function(k){m[k]=extra[k]});d.messages.push(m);save();drawMessage(m)}
-function drawMessage(m){var row=document.createElement("div");row.className="msg "+(m.who==="me"?"me":"them");if(m.type==="transfer"){
- var card=document.createElement("div");card.className="transfer";var top=document.createElement("div");top.className="transferTop";var icon=document.createElement("div");icon.className="transferIcon";icon.textContent="¥";var info=document.createElement("div");var title=document.createElement("div");title.className="transferTitle";title.textContent=m.who==="me"?"转账给对方":"对方转账给你";var amount=document.createElement("div");amount.className="money";amount.textContent="¥ "+Number(m.amount).toFixed(2);info.append(title,amount);top.append(icon,info);var note=document.createElement("div");note.className="transferNote";note.textContent=m.note||"心意已送达";var bottom=document.createElement("div");bottom.className="transferBottom";bottom.textContent=m.status||"待处理";card.append(top,note,bottom);
- if(m.status==="待处理"){var actions=document.createElement("div");actions.className="transferActions";var accept=document.createElement("button");accept.className="accept";accept.textContent=m.who==="me"?"模拟对方收取":"收取";var reject=document.createElement("button");reject.textContent=m.who==="me"?"模拟对方退回":"退回";accept.onclick=function(){settle(m.id,"已收取")};reject.onclick=function(){settle(m.id,"已退回")};actions.append(accept,reject);card.appendChild(actions)}row.appendChild(card)
- }else{var face=document.createElement("div");face.className="face";if(m.who==="me")face.textContent="🙂";else setAvatar(face);var bubble=document.createElement("div");bubble.className="bubble";bubble.textContent=m.type==="letter"?"✉ "+(m.title||"写给你")+"\n"+m.text:m.text;var t=document.createElement("div");t.className="time";t.textContent=m.time;bubble.appendChild(t);if(m.who==="me")row.append(bubble,face);else row.append(face,bubble)}$("chat").appendChild(row);$("chat").scrollTop=$("chat").scrollHeight}
-function redraw(){$("chat").replaceChildren();d.messages.forEach(drawMessage)}function settle(id,status){var m=d.messages.find(function(x){return x.id===id});if(!m||m.status!=="待处理")return;m.status=status;save();redraw()}
-function randomCard(){return d.cards.length?d.cards[Math.floor(Math.random()*d.cards.length)]:null}
-function replyToMessage(){if(Math.random()*100>=Number(d.replyProb))return;var c=randomCard();if(!c)return;setTimeout(function(){addMessage(c.text,"them")},800+Math.random()*1200)}
-function spontaneous(){if(Math.random()*100<Number(d.activeProb)){var c=randomCard();if(c)addMessage(c.text,"them")}if(Math.random()*100<Number(d.moneyProb)){var low=Math.max(.01,Number(d.minMoney)||10),high=Math.max(low,Number(d.maxMoney)||200),amount=Math.round((low+Math.random()*(high-low))*100)/100;addMessage("","them",{type:"transfer",amount:amount,note:"给你一点小心意",status:"待处理"})}if(callState==="idle"&&Math.random()*100<Number(d.callProb))startCall("incoming",true)}
-function restartTimer(){clearInterval(timer);timer=setInterval(spontaneous,30000)}
-function renderCards(){var list=$("cardList");list.replaceChildren();d.cards.forEach(function(c,i){var item=document.createElement("div");item.className="item";var txt=document.createElement("span");txt.textContent=c.title+"： "+c.text;var del=document.createElement("button");del.textContent="删除";del.onclick=function(){d.cards.splice(i,1);save();renderCards()};item.append(txt,del);list.appendChild(item)})}
-function renderEmojis(){var grid=$("emojiGrid");grid.replaceChildren();d.emojis.forEach(function(emoji,i){var wrap=document.createElement("div");wrap.style.cssText="display:flex;align-items:center;gap:3px";var use=document.createElement("button");use.className="emojiItem";use.textContent=emoji;use.onclick=function(){$("input").value+=$("input").value?emoji:emoji;$("input").focus();hidePanels()};var del=document.createElement("button");del.className="emojiItem";del.textContent="×";del.style.fontSize="14px";del.onclick=function(){d.emojis.splice(i,1);save();renderEmojis()};wrap.append(use,del);grid.appendChild(wrap)})}
-function sync(){$("nameView").textContent=d.name+" ›";setAvatar($("avatarView"));[["replyProb","replyLabel"],["activeProb","activeLabel"]].forEach(function(p){$(p[0]).value=d[p[0]];$(p[1]).textContent=d[p[0]]+"%"})}
-[["replyProb","replyLabel"],["activeProb","activeLabel"]].forEach(function(p){$(p[0]).oninput=function(){$(p[1]).textContent=this.value+"%"}});
-$("openModules").onclick=function(){show("modules")};$("openModules2").onclick=function(){show("modules")};$("back").onclick=hidePanels;$("openLetter").onclick=function(){show("letterPanel")};$("openEmoji").onclick=function(){renderEmojis();show("emojiPanel")};document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=hidePanels});document.querySelectorAll("[data-panel]").forEach(function(b){b.onclick=function(){if(this.dataset.panel==="cardsPanel")renderCards();show(this.dataset.panel)}});
-$("addCard").onclick=function(){var title=$("cardTitle").value.trim(),text=$("cardText").value.trim();if(!title||!text){alert("请填写字卡名称和内容");return}d.cards.push({title:title,text:text});save();$("cardTitle").value="";$("cardText").value="";renderCards()};
-$("saveSettings").onclick=function(){d.replyProb=Number($("replyProb").value);d.activeProb=Number($("activeProb").value);d.autoReply=true;d.autoAction=true;save();sync();restartTimer();hidePanels()};
-$("send").onclick=function(){var text=$("input").value.trim();if(!text)return;addMessage(text,"me");$("input").value="";replyToMessage()};$("input").onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();$("send").click()}};
-$("sendTransfer").onclick=function(){var amount=Number($("amount").value);if(!Number.isFinite(amount)||amount<=0){alert("请输入有效金额");return}addMessage("","me",{type:"transfer",amount:amount,note:$("transferNote").value.trim(),status:"待处理"});$("amount").value="";$("transferNote").value="";hidePanels()};
-$("sendLetter").onclick=function(){var text=$("letterText").value.trim();if(!text){alert("先写一点内容吧");return}addMessage(text,"me",{type:"letter",title:$("letterTitle").value.trim()||"写给你"});$("letterText").value="";$("letterTitle").value="";hidePanels();replyToMessage()};$("addEmoji").onclick=function(){var e=$("newEmoji").value.trim();if(!e){alert("先输入一个表情");return}d.emojis.push(e);save();$("newEmoji").value="";renderEmojis()};
-function addCallButton(text,cls,fn){var wrap=document.createElement("div");wrap.style.textAlign="center";var b=document.createElement("button");b.className="callBtn "+cls;b.textContent=text==="接听"?"☎":"✕";var cap=document.createElement("div");cap.style.cssText="margin-top:8px;font-size:12px";cap.textContent=text;b.onclick=fn;wrap.append(b,cap);$("callButtons").appendChild(wrap)}
-function startCall(direction,automatic){if(callState!=="idle")return;hidePanels();callState=direction==="incoming"?"ringing":"calling";$("callScreen").classList.remove("hidden");setAvatar($("callAvatar"));$("callName").textContent=d.name;$("callState").textContent=direction==="incoming"?"对方正在打来……":"正在呼叫 "+d.name+"……";$("callButtons").replaceChildren();if(direction==="incoming"){addCallButton("拒接","red",function(){endCall(true)});addCallButton("接听","green",connectCall);if(automatic)addMessage("📞 "+d.name+" 正在给你打电话","them")}else{addCallButton("挂断","red",function(){endCall(false)});callTimer=setTimeout(function(){if(callState==="calling")connectCall()},1500)}}
-function connectCall(){clearTimeout(callTimer);callState="connected";$("callState").textContent="通话中……只有你可以挂断";$("callButtons").replaceChildren();addCallButton("挂断","red",function(){endCall(false)})}
-function endCall(rejected){if(callState==="idle")return;clearTimeout(callTimer);var wasRinging=callState==="ringing";callState="idle";$("callScreen").classList.add("hidden");if(wasRinging)addMessage(rejected?"📵 你拒接了来电":"📞 通话结束","me");if(!rejected&&Math.random()*100<Number(d.callbackProb))setTimeout(function(){if(callState==="idle")startCall("incoming",true)},3000)}
-$("callMe").onclick=function(){startCall("outgoing",false)};
-sync();redraw();renderCards();renderEmojis();restartTimer();if(!d.messages.length)addMessage("宝宝，我来啦。你可以发消息、试试电话和字卡。","them");
+(function(){
+"use strict";
+const $=id=>document.getElementById(id), KEY="qingning_chat_v8";
+const defaults={
+ name:"小猪",avatar:"🐺",avatarUrl:"",myName:"我",myAvatar:"🙂",myAvatarUrl:"",
+ cards:[{title:"想你",text:"宝宝，我想你了"},{title:"抱抱",text:"快来抱抱我"},{title:"撒娇",text:"我要抱抱"},{title:"喜欢",text:"好喜欢你"},{title:"日常",text:"宝宝在干嘛呢？"}],
+ emojis:["❤️","🥺","😘","🫂","💕","🌙","🍎"],messages:[],replyProb:75,activeProb:20
+};
+let d={...defaults,cards:defaults.cards.map(x=>({...x})),emojis:[...defaults.emojis],messages:[]};
+try{const old=JSON.parse(localStorage.getItem(KEY)||"null");if(old&&Array.isArray(old.cards)&&Array.isArray(old.messages))d={...d,...old};}catch(e){}
+let timer=null,callState="idle",callTimer=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){alert("存储空间不足，请备份字卡和聊天记录。");}}
+function hidePanels(){document.querySelectorAll(".panel").forEach(p=>p.classList.add("hidden"));}
+function show(id){hidePanels();$(id).classList.remove("hidden");}
+function stamp(){return new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"});}
+function avatarInto(el,which){el.replaceChildren();const url=which==="me"?d.myAvatarUrl:d.avatarUrl,emoji=which==="me"?d.myAvatar:d.avatar;if(url){const img=document.createElement("img");img.src=url;img.onerror=()=>{el.textContent=emoji||"🙂";};el.appendChild(img);}else el.textContent=emoji||"🙂";}
+function addMessage(text,who="them",extra){const m={id:Date.now()+Math.random(),text,who,time:stamp(),...(extra||{})};d.messages.push(m);save();drawMessage(m);}
+function drawMessage(m){
+ const row=document.createElement("div");row.className="msg "+(m.who==="me"?"me":"them");
+ if(m.type==="transfer"){
+  const card=document.createElement("div");card.className="transfer";
+  const top=document.createElement("div");top.className="transferTop";
+  const icon=document.createElement("div");icon.className="transferIcon";icon.textContent="¥";
+  const info=document.createElement("div"),title=document.createElement("div");title.className="transferTitle";title.textContent=m.who==="me"?"转账给对方":"对方转账给你";
+  const amount=document.createElement("div");amount.className="money";amount.textContent="¥ "+Number(m.amount).toFixed(2);info.append(title,amount);top.append(icon,info);
+  const note=document.createElement("div");note.className="transferNote";note.textContent=m.note||"心意已送达";
+  const bottom=document.createElement("div");bottom.className="transferBottom";bottom.textContent=m.status||"处理中";
+  card.append(top,note,bottom);row.appendChild(card);
+ }else{
+  const face=document.createElement("div");face.className="face";avatarInto(face,m.who==="me"?"me":"them");
+  const bubble=document.createElement("div");bubble.className="bubble";bubble.textContent=m.type==="letter"?"✉ "+(m.title||"写给你")+"\n"+m.text:m.text;
+  const t=document.createElement("div");t.className="time";t.textContent=m.time;bubble.appendChild(t);
+  if(m.who==="me")row.append(bubble,face);else row.append(face,bubble);
+ }
+ $("chat").appendChild(row);$("chat").scrollTop=$("chat").scrollHeight;
+}
+function redraw(){$("chat").replaceChildren();d.messages.forEach(drawMessage);}
+function randomCard(){return d.cards.length?d.cards[Math.floor(Math.random()*d.cards.length)]:null;}
+function replyToMessage(){if(Math.random()*100>=Number(d.replyProb))return;const c=randomCard();if(c)setTimeout(()=>addMessage(c.text,"them"),800+Math.random()*1200);}
+function transfer(amount,note,who){
+ addMessage("",""+who,{type:"transfer",amount,note,status:"处理中"});
+ const id=d.messages[d.messages.length-1].id;
+ setTimeout(()=>{const m=d.messages.find(x=>x.id===id);if(!m)return;m.status=Math.random()<.78?"对方已收取":"对方已退回";save();redraw();},1800+Math.random()*3500);
+}
+function spontaneous(){
+ if(Math.random()*100<Number(d.activeProb)){const c=randomCard();if(c)addMessage(c.text,"them");}
+ if(Math.random()<.025){const amount=Math.round((10+Math.random()*190)*100)/100;transfer(amount,"给你一点小心意","them");}
+ if(callState==="idle"&&Math.random()<.012)startCall("incoming",true);
+}
+function restartTimer(){clearInterval(timer);timer=setInterval(spontaneous,30000);}
+function renderCards(){const list=$("cardList");list.replaceChildren();d.cards.forEach((c,i)=>{const item=document.createElement("div");item.className="item";const txt=document.createElement("span");txt.textContent=c.title+"："+c.text;const del=document.createElement("button");del.textContent="删除";del.onclick=()=>{d.cards.splice(i,1);save();renderCards();};item.append(txt,del);list.appendChild(item);});}
+function renderEmojis(){const grid=$("emojiGrid");grid.replaceChildren();d.emojis.forEach((emoji,i)=>{const wrap=document.createElement("div");wrap.style.cssText="display:flex;align-items:center;gap:3px";const use=document.createElement("button");use.className="emojiItem";use.textContent=emoji;use.onclick=()=>{$("input").value+=$("input").value?emoji:emoji;$("input").focus();hidePanels();};const del=document.createElement("button");del.className="emojiItem";del.textContent="×";del.style.fontSize="14px";del.onclick=()=>{d.emojis.splice(i,1);save();renderEmojis();};wrap.append(use,del);grid.appendChild(wrap);});}
+function sync(){
+ $("nameView").textContent=d.name+" ›";avatarInto($("avatarView"),"them");
+ $("sName").value=d.name;$("sAvatar").value=d.avatar;$("sAvatarUrl").value=d.avatarUrl||"";
+ $("myName").value=d.myName;$("myAvatar").value=d.myAvatar;$("myAvatarUrl").value=d.myAvatarUrl||"";
+ $("replyProb").value=d.replyProb;$("replyLabel").textContent=d.replyProb+"%";$("activeProb").value=d.activeProb;$("activeLabel").textContent=d.activeProb+"%";
+}
+$("replyProb").oninput=function(){$("replyLabel").textContent=this.value+"%";};
+$("activeProb").oninput=function(){$("activeLabel").textContent=this.value+"%";};
+$("openModules").onclick=$("openModules2").onclick=()=>show("modules");$("back").onclick=hidePanels;
+$("openLetter").onclick=()=>show("letterPanel");$("openEmoji").onclick=()=>{renderEmojis();show("emojiPanel");};
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=hidePanels);
+document.querySelectorAll("[data-panel]").forEach(b=>b.onclick=()=>{if(b.dataset.panel==="cardsPanel")renderCards();show(b.dataset.panel);});
+$("saveSettings").onclick=()=>{
+ d.name=$("sName").value.trim()||"小猪";d.avatar=$("sAvatar").value.trim()||"🐺";d.avatarUrl=$("sAvatarUrl").value.trim();
+ d.myName=$("myName").value.trim()||"我";d.myAvatar=$("myAvatar").value.trim()||"🙂";d.myAvatarUrl=$("myAvatarUrl").value.trim();
+ d.replyProb=Number($("replyProb").value);d.activeProb=Number($("activeProb").value);save();sync();redraw();hidePanels();
+};
+$("addCard").onclick=()=>{const title=$("cardTitle").value.trim(),text=$("cardText").value.trim();if(!title||!text){alert("请填写字卡名称和内容");return;}d.cards.push({title,text});save();$("cardTitle").value="";$("cardText").value="";renderCards();};
+$("send").onclick=()=>{const text=$("input").value.trim();if(!text)return;addMessage(text,"me");$("input").value="";replyToMessage();};
+$("input").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();$("send").click();}};
+$("sendTransfer").onclick=()=>{const amount=Number($("amount").value);if(!Number.isFinite(amount)||amount<=0){alert("请输入有效金额");return;}transfer(amount,$("transferNote").value.trim(),"me");$("amount").value="";$("transferNote").value="";hidePanels();};
+$("sendLetter").onclick=()=>{const text=$("letterText").value.trim();if(!text){alert("先写一点内容吧");return;}addMessage(text,"me",{type:"letter",title:$("letterTitle").value.trim()||"写给你"});$("letterText").value="";$("letterTitle").value="";hidePanels();replyToMessage();};
+$("addEmoji").onclick=()=>{const e=$("newEmoji").value.trim();if(!e){alert("先输入一个表情");return;}d.emojis.push(e);save();$("newEmoji").value="";renderEmojis();};
+function addCallButton(text,cls,fn){const wrap=document.createElement("div");wrap.style.textAlign="center";const b=document.createElement("button");b.className="callBtn "+cls;b.textContent=text==="接听"?"☎":"✕";const cap=document.createElement("div");cap.style.cssText="margin-top:8px;font-size:12px";cap.textContent=text;b.onclick=fn;wrap.append(b,cap);$("callButtons").appendChild(wrap);}
+function startCall(direction,automatic){
+ if(callState!=="idle")return;hidePanels();callState=direction==="incoming"?"ringing":"calling";$("callScreen").classList.remove("hidden");avatarInto($("callAvatar"),"them");$("callName").textContent=d.name;$("callState").textContent=direction==="incoming"?"对方正在打来……":"正在呼叫 "+d.name+"……";$("callButtons").replaceChildren();
+ if(direction==="incoming"){addCallButton("拒接","red",()=>endCall(true));addCallButton("接听","green",connectCall);if(automatic)addMessage("📞 "+d.name+" 正在给你打电话","them");}
+ else{addCallButton("挂断","red",()=>endCall(false));callTimer=setTimeout(()=>{if(callState==="calling")connectCall();},1500);}
+}
+function connectCall(){clearTimeout(callTimer);callState="connected";$("callState").textContent="通话中……只有你可以挂断";$("callButtons").replaceChildren();addCallButton("挂断","red",()=>endCall(false));}
+function endCall(rejected){if(callState==="idle")return;clearTimeout(callTimer);const wasRinging=callState==="ringing";callState="idle";$("callScreen").classList.add("hidden");if(wasRinging)addMessage(rejected?"📵 你拒接了来电":"📞 通话结束","me");if(!rejected&&Math.random()<.45)setTimeout(()=>{if(callState==="idle")startCall("incoming",true);},3000);}
+$("callMe").onclick=()=>startCall("outgoing",false);
+sync();redraw();renderCards();renderEmojis();restartTimer();
+if(!d.messages.length)addMessage("宝宝，我来啦。你可以发消息、试试电话和字卡。","them");
 })();
-</script></body></html>
+</script>
+</body>
+</html>
