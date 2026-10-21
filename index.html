@@ -6,419 +6,421 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>青柠私语</title>
 <style>
-:root{--bg:#101114;--panel:#1b1c21;--text:#f5f5f6;--muted:#92949d;--line:#303139;--mine:#91caff;--other:#292a30;--accent:#78aaff;--card:#e8b94f}
+:root{--bg:#101114;--panel:#1b1c21;--text:#f5f5f6;--muted:#92949d;--line:#303139;--mine:#b9e7a2;--mineText:#243321;--other:#282a30;--accent:#9bcf82;--field:#24252b}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
-body.day{--bg:#f4f5f8;--panel:#fff;--text:#252631;--muted:#888b97;--line:#e4e5eb;--other:#fff;--mine:#a8d8ff}
-body.cute{--bg:#fff0f5;--panel:#fff8fb;--text:#563c4a;--muted:#a58b99;--line:#f3dce7;--other:#fff;--mine:#ffc8dc;--accent:#f18bb5}
+body{margin:0;background:var(--bg);color:var(--text);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body[data-theme="day"]{--bg:#f3f4f6;--panel:#fff;--text:#22242a;--muted:#777b85;--line:#e2e4e8;--mine:#bce8a7;--mineText:#243321;--other:#fff;--accent:#68a94e;--field:#f6f7f8}
+body[data-theme="cute"]{--bg:#fff2f7;--panel:#fffafd;--text:#593c50;--muted:#a17f96;--line:#f3d9e7;--mine:#ffcce1;--mineText:#713d59;--other:#fff;--accent:#e98bb7;--field:#fff3f8}
 button,input,textarea,select{font:inherit}
-button{border:0;cursor:pointer;color:inherit}
-.app{height:100dvh;max-width:600px;margin:auto;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
-header{height:64px;flex-shrink:0;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:var(--bg);z-index:2}
-.headbtn{font-size:25px;background:transparent;width:38px}
-.person{display:flex;align-items:center;gap:9px;min-width:0}
-.personInfo{text-align:center;min-width:0}
-.personInfo strong{font-size:15px}
-.personInfo small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
-.avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--panel);font-size:24px;overflow:hidden}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.messages{flex:1;overflow-y:auto;padding:18px 13px 12px;display:flex;flex-direction:column;gap:18px;scroll-behavior:smooth}
-.time{text-align:center;color:var(--muted);font-size:11px;margin:5px 0}
-.msg{display:flex;align-items:flex-start;gap:8px;width:100%;min-width:0}
+button{cursor:pointer}
+.app{max-width:600px;min-height:100dvh;margin:auto;background:var(--bg);display:flex;flex-direction:column;position:relative}
+header{height:64px;display:flex;align-items:center;padding:0 15px;border-bottom:1px solid var(--line);gap:11px;background:var(--panel)}
+.avatar{width:39px;height:39px;border-radius:50%;background:var(--field);display:grid;place-items:center;overflow:hidden;flex-shrink:0;font-size:23px}
+.avatar img,.callAvatar img{width:100%;height:100%;object-fit:cover}
+.headName{flex:1;min-width:0;font-weight:650}
+.sub{font-size:11px;color:var(--muted);margin-top:3px;font-weight:400}
+.iconBtn{border:0;background:transparent;color:var(--text);font-size:21px;padding:7px}
+.chat{flex:1;padding:17px 13px 20px;overflow:auto;min-height:50vh}
+
+/* 消息布局：对方头像左、气泡紧靠右侧；自己气泡左、头像紧靠右侧 */
+.dayline{text-align:center;color:var(--muted);font-size:11px;margin:12px 0}
+.msg{display:flex;flex-direction:row;gap:8px;margin:14px 0;align-items:flex-end;min-width:0;width:100%}
 .msg.me{flex-direction:row-reverse}
-.msg .stack{display:flex;flex-direction:column;align-items:flex-start;min-width:0;max-width:calc(100% - 54px);flex:0 1 auto}
-.msg.me .stack{align-items:flex-end}
-.name{font-size:11px;color:var(--muted);margin:0 4px 5px}
-.bubble{display:block;width:fit-content;min-width:2.8em;max-width:min(72vw,410px);padding:10px 13px;border-radius:15px;background:var(--other);color:var(--text);line-height:1.55;font-size:15px;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal}
-.msg.me .bubble{background:var(--mine);color:#25313e}
-.msg.me .avatar{order:2}
-.msg.me .stack{order:1}
-.letterBubble{border:1px solid var(--line);padding:13px;border-radius:14px;background:var(--panel);width:fit-content;min-width:150px;max-width:min(72vw,410px)}
-.letterBubble b{display:block;margin-bottom:7px}
-.transfer{width:230px;max-width:72vw;background:#e8b94f;color:#503b13;border-radius:12px;overflow:hidden}
-.transferTop{padding:15px 14px 12px;display:flex;gap:10px;align-items:center}
-.coin{font-size:27px}
-.transferAmount{font-size:23px;font-weight:700}
-.transferNote{font-size:12px;margin-top:4px}
-.transferBottom{border-top:1px solid #c99c38;padding:8px 12px;font-size:11px;display:flex;justify-content:space-between;align-items:center}
-.transferActions{display:flex;gap:8px;padding:0 12px 12px}
-.transferActions button{padding:6px 12px;border-radius:8px;background:#fff4d3;color:#6d5016;font-size:12px}
-.transferActions button:disabled{opacity:.5}
-.composer{flex-shrink:0;padding:9px 10px calc(9px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--bg)}
-.tools{display:flex;justify-content:space-around;align-items:center;margin-bottom:9px}
-.tools button{background:transparent;font-size:21px;color:var(--muted);padding:3px 8px}
-.sendrow{display:flex;align-items:flex-end;gap:8px}
-#input{flex:1;min-width:0;max-height:100px;resize:none;border:0;outline:0;border-radius:19px;padding:11px 14px;background:var(--panel);color:var(--text)}
-.send{width:42px;height:42px;border-radius:50%;background:var(--accent);color:white;font-size:22px;flex-shrink:0}
-.panel{position:absolute;z-index:10;left:10px;right:10px;bottom:calc(82px + env(safe-area-inset-bottom));max-height:70%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 10px 45px #0004;display:none}
-.panel.show{display:block}
-.panelHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-weight:700}
-.close{background:transparent;font-size:22px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;min-width:0}
-.field label{font-size:12px;color:var(--muted)}
-.field input,.field textarea,.field select{width:100%;min-width:0;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;outline:none}
-.field textarea{min-height:80px;resize:vertical}
-.primary,.secondary,.danger{padding:10px 13px;border-radius:11px}
-.primary{background:var(--accent);color:white}
-.secondary{background:var(--bg);border:1px solid var(--line)}
-.danger{background:#ef7373;color:white}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0}
-.row label{font-size:13px}
-.row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
-.row input[type=range]{width:45%;accent-color:var(--accent)}
-.row input[type=number]{width:90px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px}
-.cardItem{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
-.cardItem strong{display:block;margin-bottom:5px}
-.cardItem p{font-size:13px;color:var(--muted);white-space:pre-wrap;margin:0 0 9px}
-.cardItem button{font-size:12px;padding:5px 9px;border-radius:8px;background:var(--bg);margin-right:5px}
-.emojiList{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-.emojiList button{font-size:25px;background:var(--bg);border-radius:10px;padding:6px}
-.callScreen{position:absolute;inset:0;z-index:20;background:linear-gradient(160deg,#25344b,#11141d 75%);display:none;flex-direction:column;align-items:center;justify-content:space-between;padding:16vh 25px 10vh;text-align:center}
-.callScreen.show{display:flex}
-.callAvatar{width:110px;height:110px;border-radius:50%;background:#ffffff18;display:grid;place-items:center;font-size:60px;overflow:hidden}
-.callAvatar img{width:100%;height:100%;object-fit:cover}
-.callTitle{font-size:24px;margin-top:20px}
-.callSub{color:#c2cad7;margin-top:12px}
-.callButtons{display:flex;gap:55px}
-.callButtons button{width:65px;height:65px;border-radius:50%;font-size:26px;color:white}
-.green{background:#31bd70}.red{background:#ef5350}
-.toast{position:absolute;z-index:30;top:75px;left:50%;transform:translateX(-50%);background:#333d;color:white;padding:9px 14px;border-radius:20px;display:none;font-size:13px}
-.empty{text-align:center;color:var(--muted);font-size:12px;margin:30px 0}
+.msg .avatar{width:30px;height:30px;font-size:17px;flex:0 0 30px}
+.msg>div:not(.avatar){flex:0 1 auto;min-width:0;max-width:calc(100% - 38px)}
+.bubble{display:block;width:fit-content;min-width:2.8em;max-width:100%;box-sizing:border-box;padding:11px 13px;border-radius:15px;background:var(--other);color:var(--text);overflow-wrap:anywhere;word-break:normal;line-height:1.55;white-space:pre-wrap}
+.me .bubble{background:var(--mine);color:var(--mineText);border-bottom-right-radius:5px;border-bottom-left-radius:15px}
+.msg:not(.me) .bubble{border-bottom-left-radius:5px}
+.time{font-size:10px;color:var(--muted);margin:4px 5px 0}
+.me .time{text-align:right}
+
+.bar{background:var(--panel);border-top:1px solid var(--line);padding:10px 11px max(12px,env(safe-area-inset-bottom))}
+.tools{display:flex;gap:7px;overflow-x:auto;padding-bottom:9px}
+.tool{border:1px solid var(--line);background:var(--field);color:var(--text);border-radius:10px;padding:7px 11px;white-space:nowrap;font-size:12px}
+.sendrow{display:flex;gap:8px;align-items:flex-end}
+#input{flex:1;min-width:0;resize:none;max-height:110px;border:1px solid var(--line);background:var(--field);color:var(--text);border-radius:12px;padding:11px}
+.send{border:0;background:var(--accent);color:#172017;border-radius:11px;padding:12px 16px;font-weight:650}
+.panel{position:absolute;z-index:10;left:10px;right:10px;bottom:95px;max-height:75dvh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 12px 45px #0004}
+.hidden{display:none!important}
+.panelHead{font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}
+.close{border:0;background:transparent;color:var(--muted);font-size:25px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.menuBtn,.btn{border:1px solid var(--line);background:var(--field);color:var(--text);border-radius:11px;padding:12px;text-align:left}
+.btn{display:inline-block;text-align:center;margin-top:10px}
+.primary{background:var(--accent);color:#182018;border:0}
+label{display:block;font-size:13px;color:var(--muted);margin:14px 0 7px}
+.field{width:100%;border:1px solid var(--line);background:var(--field);color:var(--text);padding:11px;border-radius:10px;outline:none}
+textarea.field{resize:vertical;min-height:70px}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{min-width:0;flex:1}
+.note{color:var(--muted);font-size:11px;line-height:1.6}
+.cardItem{padding:11px;border:1px solid var(--line);border-radius:12px;margin-top:9px}
+.cardTitle{font-weight:650}
+.cardText{font-size:13px;color:var(--muted);margin:5px 0 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.transfer{width:min(275px,75vw);border-radius:15px;overflow:hidden;background:#f3aa4c;color:white;box-shadow:0 4px 15px #0002}
+.transferTop{display:flex;gap:11px;align-items:center;padding:15px}
+.transferIcon{width:42px;height:42px;border-radius:12px;background:#ffffff30;display:grid;place-items:center;font-size:25px}
+.transferTitle{font-size:12px;opacity:.9}
+.money{font-size:27px;font-weight:700;margin-top:4px}
+.transferNote{padding:0 16px 14px;font-size:12px}
+.transferBottom{background:#fff2df;color:#95662c;padding:11px 14px;font-size:12px}
+.callMini{position:fixed;z-index:20;top:75px;left:50%;transform:translateX(-50%);width:min(350px,calc(100vw - 28px));background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 8px 35px #0005}
+.callMiniTop{display:flex;align-items:center;gap:10px}
+.callAvatar{width:43px;height:43px;border-radius:50%;background:var(--field);display:grid;place-items:center;overflow:hidden;font-size:22px}
+.callDetails{flex:1}
+.callState{font-size:12px;color:var(--muted);margin-top:4px}
+.callActions{display:flex;gap:8px;margin-top:12px}
+.callActions button{flex:1;border:0;border-radius:10px;padding:10px;background:var(--accent);color:#172017}
+.callActions .red{background:#e75d67;color:white}
+.callActions .dark{background:var(--field);color:var(--text)}
 </style>
 </head>
-<body>
+<body data-theme="dark">
 <div class="app">
 <header>
-<button class="headbtn" id="back">‹</button>
-<div class="person">
-<div class="avatar" id="headAvatar">🐺</div>
-<div class="personInfo"><strong id="headName">小猪 ›</strong><small>青柠私语 · 仅此一份</small></div>
-</div>
-<button class="headbtn" id="menuBtn">☷</button>
+  <div class="avatar" id="headAvatar">🐺</div>
+  <div class="headName"><div id="headName">小猪</div><div class="sub">青柠私语 · 私人聊天空间</div></div>
+  <button class="iconBtn" id="openMenu">☰</button>
 </header>
+<main class="chat" id="chat"></main>
+<footer class="bar">
+  <div class="tools">
+    <button class="tool" id="openCards">▤ 字卡</button>
+    <button class="tool" id="openEmoji">☺ 表情</button>
+    <button class="tool" id="openLetter">✉ 写信</button>
+    <button class="tool" id="callMe">☎ 电话</button>
+  </div>
+  <div class="sendrow">
+    <textarea id="input" rows="1" placeholder="发送消息……"></textarea>
+    <button class="send" id="send">发送</button>
+  </div>
+</footer>
 
-<main class="messages" id="messages"></main>
+<section class="panel hidden" id="menuPanel">
+  <div class="panelHead">功能菜单 <button class="close" data-close>×</button></div>
+  <div class="grid">
+    <button class="menuBtn" data-open="settingsPanel">⚙️ 设置与主题</button>
+    <button class="menuBtn" data-open="profilePanel">🖼️ 头像与名称</button>
+    <button class="menuBtn" data-open="cardsPanel">▤ 字卡库管理</button>
+    <button class="menuBtn" data-open="transferPanel">￥ 给对方转账</button>
+    <button class="menuBtn" data-open="letterPanel">✉ 写信</button>
+    <button class="menuBtn" data-open="emojiPanel">☺ 表情管理</button>
+  </div>
+</section>
 
-<div class="composer">
-<div class="tools">
-<button id="menuOpen" title="功能">＋</button>
-<button id="letterOpen" title="写信">✉</button>
-<button id="emojiOpen" title="表情">☺</button>
-<button id="callOpen" title="电话">☎</button>
-</div>
-<div class="sendrow">
-<textarea id="input" rows="1" placeholder="发消息…"></textarea>
-<button class="send" id="sendBtn">↑</button>
-</div>
+<section class="panel hidden" id="settingsPanel">
+  <div class="panelHead">设置与主题 <button class="close" data-close>×</button></div>
+  <label>聊天主题</label>
+  <div class="grid">
+    <button class="menuBtn" data-theme-pick="dark">🌙 深色主题</button>
+    <button class="menuBtn" data-theme-pick="day">☀️ 白天主题</button>
+    <button class="menuBtn" data-theme-pick="cute">🎀 可爱粉色</button>
+  </div>
+  <label>你发消息后，对方回复概率：<span id="replyLabel">75%</span></label>
+  <input class="field" id="replyProb" type="range" min="0" max="100" value="75">
+  <label>对方主动发消息概率：<span id="activeLabel">20%</span></label>
+  <input class="field" id="activeProb" type="range" min="0" max="100" value="20">
+  <label>对方主动消息检查间隔</label>
+  <select class="field" id="interval">
+    <option value="15">较频繁</option>
+    <option value="30" selected>正常</option>
+    <option value="60">较慢</option>
+    <option value="120">很慢</option>
+  </select>
+  <button class="btn primary" id="saveSettings">保存设置</button>
+  <p class="note">回复与主动消息按概率随机触发。转账和电话是本地模拟，不会真的转账或拨打电话。</p>
+</section>
+
+<section class="panel hidden" id="profilePanel">
+  <div class="panelHead">头像与名称 <button class="close" data-close>×</button></div>
+  <label>你的昵称</label><input class="field" id="myName" placeholder="例如：小青柠">
+  <label>你的头像图片链接（可留空）</label><input class="field" id="myAvatarUrl" placeholder="https://……">
+  <label>或从手机相册选择你的头像</label><input class="field" id="myAvatarFile" type="file" accept="image/*">
+  <label>你的默认头像表情</label><input class="field" id="myAvatarEmoji" placeholder="🍋">
+  <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+  <label>对方的昵称</label><input class="field" id="otherName" placeholder="例如：小猪">
+  <label>对方头像图片链接（可留空）</label><input class="field" id="otherAvatarUrl" placeholder="https://……">
+  <label>或从手机相册选择对方头像</label><input class="field" id="otherAvatarFile" type="file" accept="image/*">
+  <label>对方的默认头像表情</label><input class="field" id="otherAvatarEmoji" placeholder="🐺">
+  <button class="btn primary" id="saveProfile">保存双方资料</button>
+  <p class="note">头像保存在当前浏览器。图片太大时可能占用较多本地存储空间。</p>
+</section>
+
+<section class="panel hidden" id="cardsPanel">
+  <div class="panelHead">字卡库 <button class="close" data-close>×</button></div>
+  <label>字卡分组</label>
+  <div class="row">
+    <select class="field" id="cardGroup"></select>
+    <button class="btn" id="newGroup">＋ 新分组</button>
+  </div>
+  <label>字卡名称（选填）</label><input class="field" id="cardTitle" placeholder="例如：撒娇、晚安">
+  <label>字卡内容</label><textarea class="field" id="cardText" placeholder="输入对方可能说的话……"></textarea>
+  <button class="btn primary" id="addCard">＋ 添加字卡</button>
+  <label>筛选分组</label><select class="field" id="filterGroup"></select>
+  <div id="cardList"></div>
+  <p class="note">对方随机回复时会从字卡库中抽取，不提供手动发送字卡的按钮。</p>
+</section>
+
+<section class="panel hidden" id="transferPanel">
+  <div class="panelHead">给对方转账 <button class="close" data-close>×</button></div>
+  <label>金额</label><input class="field" id="amount" type="number" min="0.01" step="0.01" placeholder="输入金额">
+  <label>留言</label><input class="field" id="transferNote" placeholder="给你买奶茶">
+  <button class="btn primary" id="sendTransfer">发送转账</button>
+</section>
+
+<section class="panel hidden" id="letterPanel">
+  <div class="panelHead">写信 <button class="close" data-close>×</button></div>
+  <label>标题</label><input class="field" id="letterTitle" placeholder="写给你">
+  <label>内容</label><textarea class="field" id="letterText" placeholder="想说的话……"></textarea>
+  <button class="btn primary" id="sendLetter">发送信件</button>
+</section>
+
+<section class="panel hidden" id="emojiPanel">
+  <div class="panelHead">表情管理 <button class="close" data-close>×</button></div>
+  <div class="grid" id="emojiList"></div>
+  <label>添加表情</label><input class="field" id="newEmoji" placeholder="🥺 或 ❤️">
+  <button class="btn primary" id="addEmoji">＋ 添加表情</button>
+</section>
+
+<section class="panel hidden" id="callPanel">
+  <div class="panelHead">电话 <button class="close" data-close>×</button></div>
+  <p>电话以顶部浮窗显示，通话时仍然可以在聊天框发送消息。</p>
+  <button class="btn primary" id="startOutgoing">呼叫对方</button>
+</section>
 </div>
 
-<div class="panel" id="menuPanel">
-<div class="panelHead">功能菜单 <button class="close" data-close>×</button></div>
-<div class="grid">
-<button class="secondary" data-panel="settings">⚙️ 设置</button>
-<button class="secondary" data-panel="cards">💌 字卡库</button>
-<button class="secondary" data-panel="transfer">💰 转账给对方</button>
-<button class="secondary" data-panel="letter">✉ 写信</button>
-<button class="secondary" data-panel="emojis">☺ 表情管理</button>
-<button class="secondary" data-panel="history">🗂 聊天记录</button>
-</div>
-</div>
-
-<div class="panel" id="settingsPanel">
-<div class="panelHead">互动与外观设置 <button class="close" data-close>×</button></div>
-<div class="field"><label>对方备注</label><input id="settingName" value="小猪"></div>
-<div class="field"><label>头像表情</label><input id="settingAvatar" value="🐺"></div>
-<div class="field"><label>头像图片链接（可选）</label><input id="settingAvatarUrl" placeholder="https://..."></div>
-<div class="field"><label>从相册选择头像</label><input id="settingAvatarFile" type="file" accept="image/*"></div>
-<div class="field"><label>聊天主题</label><select id="theme"><option value="dark">深夜黑</option><option value="day">白天版</option><option value="cute">可爱粉</option></select></div>
-<div class="row"><label>开启随机回复</label><input type="checkbox" id="autoReply" checked></div>
-<div class="row"><label>回复概率 <span id="replyVal">75%</span></label><input id="replyProb" type="range" min="0" max="100" value="75"></div>
-<div class="row"><label>对方主动发消息概率 <span id="activeVal">20%</span></label><input id="activeProb" type="range" min="0" max="100" value="20"></div>
-<div class="row"><label>开启主动消息、转账和来电</label><input type="checkbox" id="autoAction" checked></div>
-<div class="row"><label>对方随机转账概率 <span id="moneyVal">8%</span></label><input id="moneyProb" type="range" min="0" max="100" value="8"></div>
-<div class="grid">
-<div class="field"><label>随机转账最低金额</label><input id="moneyMin" type="number" value="10" min="0"></div>
-<div class="field"><label>随机转账最高金额</label><input id="moneyMax" type="number" value="200" min="0"></div>
-<div class="field"><label>对方来电概率 <span id="callVal">8%</span></label><input id="callProb" type="range" min="0" max="100" value="8"></div>
-<div class="field"><label>挂断后回拨概率 <span id="callbackVal">45%</span></label><input id="callbackProb" type="range" min="0" max="100" value="45"></div>
-</div>
-<button class="primary" id="saveSettings">保存设置</button>
-</div>
-
-<div class="panel" id="cardsPanel">
-<div class="panelHead">字卡库 <button class="close" data-close>×</button></div>
-<div class="field"><label>字卡标题</label><input id="cardTitle" placeholder="例如：想你"></div>
-<div class="field"><label>字卡内容</label><textarea id="cardContent" placeholder="输入消息内容"></textarea></div>
-<button class="primary" id="addCard">添加字卡</button>
-<div style="height:12px"></div><div id="cardList"></div>
-</div>
-
-<div class="panel" id="transferPanel">
-<div class="panelHead">转账给对方 <button class="close" data-close>×</button></div>
-<div class="field"><label>金额</label><input id="sendAmount" type="number" min="0.01" step="0.01" placeholder="自行输入金额"></div>
-<div class="field"><label>备注</label><input id="sendNote" placeholder="给你买奶茶"></div>
-<button class="primary" id="sendTransfer">确认转账</button>
-</div>
-
-<div class="panel" id="letterPanel">
-<div class="panelHead">写一封回信 <button class="close" data-close>×</button></div>
-<div class="field"><label>信件标题</label><input id="letterTitle" placeholder="写给你"></div>
-<div class="field"><label>信件内容</label><textarea id="letterContent" placeholder="想说的话……"></textarea></div>
-<button class="primary" id="sendLetter">发送回信</button>
-</div>
-
-<div class="panel" id="emojisPanel">
-<div class="panelHead">我的小表情 <button class="close" data-close>×</button></div>
-<div class="emojiList" id="emojiList"></div>
-<div class="field"><label>添加表情（输入一个或多个）</label><input id="newEmoji" placeholder="🌷 🐰 💗"></div>
-<button class="primary" id="addEmoji">添加表情</button>
-</div>
-
-<div class="panel" id="historyPanel">
-<div class="panelHead">聊天记录 <button class="close" data-close>×</button></div>
-<button class="secondary" id="exportChat">导出聊天记录</button>
-<button class="danger" id="clearChat">清空聊天记录</button>
-</div>
-
-<div class="panel" id="emojiPanel">
-<div class="panelHead">选择表情 <button class="close" data-close>×</button></div>
-<div class="emojiList" id="quickEmojis"></div>
-</div>
-
-<div class="callScreen" id="callScreen">
-<div>
-<div class="callAvatar" id="callAvatar">🐺</div>
-<div class="callTitle" id="callTitle">小猪</div>
-<div class="callSub" id="callStatus">正在呼叫…</div>
-</div>
-<div class="callButtons" id="callButtons">
-<button class="red" id="rejectCall">✕</button>
-<button class="green" id="acceptCall">☎</button>
-</div>
-</div>
-<div class="toast" id="toast"></div>
+<div class="callMini hidden" id="callMini">
+  <div class="callMiniTop">
+    <div class="callAvatar" id="callAvatar">🐺</div>
+    <div class="callDetails"><strong id="callName">小猪</strong><div class="callState" id="callState">通话中……</div></div>
+    <button class="iconBtn" id="minimizeCall">⌄</button>
+  </div>
+  <div class="callActions" id="callActions"></div>
 </div>
 
 <script>
-(()=>{
+(function(){
+"use strict";
 const $=id=>document.getElementById(id);
 const KEY="qingning_chat_v3";
-const defaults={
-name:"小猪",avatar:"🐺",avatarUrl:"",theme:"dark",
-replyProb:75,activeProb:20,moneyProb:8,moneyMin:10,moneyMax:200,
-callProb:8,callbackProb:45,autoReply:true,autoAction:true,
-cards:[
-{title:"想你",content:"宝宝，我想你了"},
-{title:"抱抱",content:"快来抱抱我"},
-{title:"撒娇",content:"我要抱抱"},
-{title:"喜欢",content:"好喜欢你"},
-{title:"日常",content:"宝宝在干嘛呢？"}
-],
-emojis:["❤️","🥺","😘","🫂","💕","🌙","🍎"],
-messages:[]
+const base={
+  theme:"dark",myName:"我",myEmoji:"🍋",myUrl:"",
+  otherName:"小猪",otherEmoji:"🐺",otherUrl:"",
+  replyProb:75,activeProb:20,interval:30,
+  groups:["日常","撒娇","想念","晚安"],
+  cards:[
+    {title:"想你",text:"宝宝，我想你了",group:"想念"},
+    {title:"抱抱",text:"快来抱抱我",group:"撒娇"},
+    {title:"撒娇",text:"我要抱抱",group:"撒娇"},
+    {title:"喜欢",text:"好喜欢你",group:"日常"},
+    {title:"日常",text:"宝宝在干嘛呢？",group:"日常"},
+    {title:"晚安",text:"早点睡，晚安宝宝",group:"晚安"}
+  ],
+  emojis:["❤️","🥺","😘","🫂","💕","🌙","🍎"],messages:[]
 };
-let state;
-try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||"{}")};}catch(e){state={...defaults};}
-if(!Array.isArray(state.messages))state.messages=[];
-if(!Array.isArray(state.cards))state.cards=defaults.cards.slice();
-if(!Array.isArray(state.emojis))state.emojis=defaults.emojis.slice();
-let callMode="outgoing",callAnswered=false,callTimer=null,avatarData="";
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){toast("存储空间不足，请减少图片大小");}}
-function toast(s){$("toast").textContent=s;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",1800);}
-function avatarHTML(){return state.avatarUrl?`<img src="${esc(state.avatarUrl)}" alt="">`:esc(state.avatar||"🐺");}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function applySettings(){
-document.body.className=state.theme==="day"?"day":state.theme==="cute"?"cute":"";
-$("headName").textContent=(state.name||"小猪")+" ›";
-$("headAvatar").innerHTML=avatarHTML();
-$("callAvatar").innerHTML=avatarHTML();
-$("callTitle").textContent=state.name||"小猪";
+let d;
+try{d=Object.assign({},base,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){d={...base}}
+d.groups=Array.isArray(d.groups)?d.groups:base.groups.slice();
+d.cards=Array.isArray(d.cards)?d.cards:base.cards.slice();
+d.emojis=Array.isArray(d.emojis)?d.emojis:base.emojis.slice();
+d.messages=Array.isArray(d.messages)?d.messages:[];
+let timer=null,callState="idle",callTimer=null;
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){alert("本地空间不足，请换一张较小的头像图片。")}}
+function avatarContent(el,url,emoji){
+  el.replaceChildren();
+  if(url){const img=document.createElement("img");img.src=url;img.onerror=()=>{el.textContent=emoji||"🍋"};el.appendChild(img)}
+  else el.textContent=emoji||"🍋";
 }
-function persistRender(){save();render();}
-function render(){
-const box=$("messages");box.innerHTML="";
-if(!state.messages.length){box.innerHTML='<div class="empty">你们的故事，从第一句话开始 ♡</div>';return;}
-state.messages.forEach((m,i)=>{
-const row=document.createElement("div");row.className="msg "+(m.me?"me":"");
-const av=document.createElement("div");av.className="avatar";
-av.innerHTML=m.me?"🫧":avatarHTML();
-const stack=document.createElement("div");stack.className="stack";
-const nm=document.createElement("div");nm.className="name";nm.textContent=m.me?"我":(state.name||"小猪");
-stack.appendChild(nm);
-if(m.type==="transfer"){
-const t=document.createElement("div");t.className="transfer";
-t.innerHTML=`<div class="transferTop"><div class="coin">💛</div><div><div class="transferAmount">¥${Number(m.amount||0).toFixed(2)}</div><div class="transferNote">${esc(m.text||"给你一点小心意")}</div></div></div><div class="transferBottom"><span>模拟转账</span><span>${esc(m.status||"待处理")}</span></div>`;
-if(m.status==="待处理"){
-const actions=document.createElement("div");actions.className="transferActions";
-const receive=document.createElement("button");receive.textContent=m.me?"收款方待收取":"收取";receive.disabled=!!m.me;
-const back=document.createElement("button");back.textContent=m.me?"退回待处理":"退回";back.disabled=!!m.me;
-receive.onclick=()=>changeTransfer(i,"已收取");back.onclick=()=>changeTransfer(i,"已退回");
-actions.append(receive,back);t.appendChild(actions);
+function hidePanels(){document.querySelectorAll(".panel").forEach(x=>x.classList.add("hidden"))}
+function showPanel(id){hidePanels();$(id).classList.remove("hidden")}
+function timeNow(){return new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"})}
+function updateProfile(){
+  $("headName").textContent=d.otherName;
+  avatarContent($("headAvatar"),d.otherUrl,d.otherEmoji);
+  avatarContent($("callAvatar"),d.otherUrl,d.otherEmoji);
+  $("callName").textContent=d.otherName;
 }
-stack.appendChild(t);
-}else if(m.type==="letter"){
-const b=document.createElement("div");b.className="letterBubble";
-const title=document.createElement("b");title.textContent="✉ "+(m.title||"写给你");
-const content=document.createElement("div");content.className="bubble";content.textContent=m.text||"";
-b.append(title,content);stack.appendChild(b);
-}else{
-const b=document.createElement("div");b.className="bubble";b.textContent=m.text||"";stack.appendChild(b);
+function addMessage(text,who="other",extra={}){
+  d.messages.push({id:Date.now()+Math.random(),text,who,time:timeNow(),...extra});
+  save();renderMessages();
 }
-row.append(av,stack);box.appendChild(row);
-});
-box.scrollTop=box.scrollHeight;
+function renderMessages(){
+  const chat=$("chat");chat.replaceChildren();
+  if(!d.messages.length){
+    const hello=document.createElement("div");hello.className="dayline";hello.textContent="青柠私语 · 聊天开始啦 ☘";chat.appendChild(hello);return;
+  }
+  d.messages.forEach(m=>{
+    const row=document.createElement("div");row.className="msg "+(m.who==="me"?"me":"");
+    const av=document.createElement("div");av.className="avatar";
+    avatarContent(av,m.who==="me"?d.myUrl:d.otherUrl,m.who==="me"?d.myEmoji:d.otherEmoji);
+    const stack=document.createElement("div");stack.className="msgContent";
+    const bubble=document.createElement("div");bubble.className="bubble";
+    if(m.type==="transfer"){
+      const card=document.createElement("div");card.className="transfer";
+      const top=document.createElement("div");top.className="transferTop";
+      const ico=document.createElement("div");ico.className="transferIcon";ico.textContent="¥";
+      const info=document.createElement("div");
+      const title=document.createElement("div");title.className="transferTitle";
+      title.textContent=m.who==="me"?"转账给对方":"对方转账给你";
+      const amount=document.createElement("div");amount.className="money";amount.textContent="¥ "+Number(m.amount).toFixed(2);
+      info.append(title,amount);top.append(ico,info);
+      const note=document.createElement("div");note.className="transferNote";note.textContent=m.text||"心意已送达";
+      const bottom=document.createElement("div");bottom.className="transferBottom";bottom.textContent=m.status||"待处理";
+      card.append(top,note,bottom);bubble.replaceChildren(card);
+    }else if(m.type==="letter"){bubble.textContent="✉ "+(m.title||"写给你")+"\n"+m.text}
+    else bubble.textContent=m.text;
+    stack.appendChild(bubble);
+    const tm=document.createElement("div");tm.className="time";tm.textContent=m.time||"";stack.appendChild(tm);
+    row.append(av,stack);chat.appendChild(row);
+  });
+  chat.scrollTop=chat.scrollHeight;
 }
-function addMessage(text,me=true,type="text",extra={}){
-state.messages.push({text,me,type,time:Date.now(),...extra});
-persistRender();
+function sendMyMessage(text){
+  text=String(text||"").trim();if(!text)return;
+  addMessage(text,"me");$("input").value="";
+  if(Math.random()*100<Number(d.replyProb)){
+    setTimeout(()=>{if(Math.random()<.75)replyCard();else addMessage("嗯嗯，宝宝，我在听。","other")},1000+Math.random()*3500);
+  }
 }
-function changeTransfer(i,status){state.messages[i].status=status;persistRender();toast(status==="已收取"?"已收取（模拟）":"已退回（模拟）");}
-function randomItem(a){return a[Math.floor(Math.random()*a.length)];}
-function chance(n){return Math.random()*100<Number(n||0);}
-function randomReply(){
-if(!state.autoReply||!chance(state.replyProb)||!state.cards.length)return;
-setTimeout(()=>{const c=randomItem(state.cards);addMessage(c.content,false);randomAction();},800+Math.random()*1200);
+function replyCard(){
+  if(!d.cards.length){addMessage("宝宝，我在呢。","other");return}
+  const c=d.cards[Math.floor(Math.random()*d.cards.length)];
+  addMessage(c.text,"other");
 }
-function randomAction(){
-if(!state.autoAction)return;
-setTimeout(()=>{
-if(chance(state.moneyProb)){
-const min=Math.max(0,Number(state.moneyMin)||0),max=Math.max(min,Number(state.moneyMax)||min);
-const amount=(min+Math.random()*(max-min)).toFixed(2);
-addMessage("",false,"transfer",{amount,text:"给你一点小心意",status:"待处理"});
-}else if(chance(state.callProb)){startCall("incoming");}
-},900+Math.random()*2500);
+function spontaneous(){if(Math.random()*100<Number(d.activeProb))replyCard()}
+function restartTimer(){clearInterval(timer);timer=setInterval(spontaneous,Math.max(10,Number(d.interval)||30)*1000)}
+function renderGroups(){
+  const a=$("cardGroup"),b=$("filterGroup");a.replaceChildren();b.replaceChildren();
+  d.groups.forEach(g=>{
+    const o=document.createElement("option");o.value=g;o.textContent=g;a.appendChild(o);
+    const p=document.createElement("option");p.value=g;p.textContent=g;b.appendChild(p);
+  });
+  const all=document.createElement("option");all.value="__all";all.textContent="全部分组";b.prepend(all);b.value="__all";
 }
-function sendText(){
-const input=$("input"),text=input.value.trim();if(!text)return;
-input.value="";input.style.height="auto";addMessage(text,true);randomReply();
-}
-function closePanels(){$$(".panel").forEach(p=>p.classList.remove("show"));}
-function $$(s){return [...document.querySelectorAll(s)];}
-function openPanel(name){closePanels();const el=$(name+"Panel");if(el)el.classList.add("show");}
 function renderCards(){
-$("cardList").innerHTML="";
-state.cards.forEach((c,i)=>{
-const el=document.createElement("div");el.className="cardItem";
-const title=document.createElement("strong");title.textContent=c.title;
-const content=document.createElement("p");content.textContent=c.content;
-const send=document.createElement("button");send.textContent="发送";
-send.onclick=()=>{addMessage(c.content,true);closePanels();randomReply();};
-const del=document.createElement("button");del.textContent="删除";
-del.onclick=()=>{state.cards.splice(i,1);save();renderCards();};
-el.append(title,content,send,del);$("cardList").appendChild(el);
-});
+  const previous=$("filterGroup").value||"__all";
+  renderGroups();$("filterGroup").value=d.groups.includes(previous)?previous:"__all";
+  const list=$("cardList");list.replaceChildren();
+  const filter=$("filterGroup").value;
+  d.cards.forEach((c,i)=>{
+    if(filter!=="__all"&&c.group!==filter)return;
+    const box=document.createElement("div");box.className="cardItem";
+    const title=document.createElement("div");title.className="cardTitle";title.textContent=(c.title||"未命名字卡")+" · "+(c.group||"日常");
+    const txt=document.createElement("div");txt.className="cardText";txt.textContent=c.text;
+    const btns=document.createElement("div");btns.className="cardBtns";
+    const del=document.createElement("button");del.textContent="删除";
+    del.onclick=()=>{if(confirm("删除这张字卡？")){d.cards.splice(i,1);save();renderCards()}};
+    btns.append(del);box.append(title,txt,btns);list.appendChild(box);
+  });
 }
 function renderEmojis(){
-$("emojiList").innerHTML="";$("quickEmojis").innerHTML="";
-state.emojis.forEach((e,i)=>{
-const b=document.createElement("button");b.textContent=e;b.title="点击插入";
-b.onclick=()=>{$("input").value+=e;$("input").focus();closePanels();};
-$("quickEmojis").appendChild(b);
-const wrap=document.createElement("span");wrap.style.position="relative";
-const x=document.createElement("button");x.textContent=e;
-x.onclick=()=>{state.emojis.splice(i,1);save();renderEmojis();};
-$("emojiList").appendChild(x);
-});
+  const list=$("emojiList");list.replaceChildren();
+  d.emojis.forEach((e,i)=>{
+    const b=document.createElement("button");b.className="menuBtn";b.textContent=e+"　×";
+    b.onclick=()=>{d.emojis.splice(i,1);save();renderEmojis()};list.appendChild(b);
+  });
 }
-function loadSettings(){
-["name","avatar","avatarUrl","theme","replyProb","activeProb","moneyProb","moneyMin","moneyMax","callProb","callbackProb"].forEach(k=>{
-const el=$("setting"+k.charAt(0).toUpperCase()+k.slice(1))||$(k);
-if(el)el.value=state[k]??defaults[k];
-});
-$("autoReply").checked=state.autoReply;
-$("autoAction").checked=state.autoAction;
-updateLabels();
+function setTheme(theme){d.theme=theme;document.body.dataset.theme=theme;save()}
+function readFile(file,callback){
+  if(!file)return;
+  if(!file.type.startsWith("image/")){alert("请选择图片文件");return}
+  const reader=new FileReader();reader.onload=()=>callback(String(reader.result));reader.readAsDataURL(file);
 }
-function updateLabels(){
-["reply","active","money","call","callback"].forEach(k=>{
-const el=$(k+"Prob"),label=$(k+"Val");if(el&&label)label.textContent=el.value+"%";
-});
+function callButton(label,cls,fn){
+  const b=document.createElement("button");b.textContent=label;if(cls)b.className=cls;b.onclick=fn;$("callActions").appendChild(b);
 }
-function saveSettings(){
-state.name=$("settingName").value.trim()||"小猪";
-state.avatar=$("settingAvatar").value.trim()||"🐺";
-state.avatarUrl=avatarData||$("settingAvatarUrl").value.trim();
-state.theme=$("theme").value;
-["replyProb","activeProb","moneyProb","moneyMin","moneyMax","callProb","callbackProb"].forEach(k=>state[k]=Number($(k).value));
-state.autoReply=$("autoReply").checked;state.autoAction=$("autoAction").checked;
-applySettings();save();closePanels();toast("设置已保存");
+function openCall(state){
+  clearTimeout(callTimer);callState=state;
+  $("callMini").classList.remove("hidden");$("callActions").replaceChildren();
+  if(state==="incoming"){
+    $("callState").textContent="对方正在打来……";
+    callButton("拒接","red",()=>endCall("已拒接"));
+    callButton("接听","",()=>openCall("connected"));
+    addMessage("📞 "+d.otherName+" 正在给你打电话","other");
+  }else if(state==="calling"){
+    $("callState").textContent="正在呼叫对方……";
+    callButton("挂断","red",()=>endCall("已挂断"));
+    callTimer=setTimeout(()=>{if(callState==="calling")openCall("connected")},1800);
+  }else if(state==="connected"){
+    $("callState").textContent="通话中 · 你可以继续发消息";
+    callButton("结束通话","red",()=>endCall("通话结束"));
+  }
 }
-function startCall(mode){
-callMode=mode;callAnswered=false;
-$("callStatus").textContent=mode==="incoming"?"对方正在呼叫你…":"正在呼叫…";
-$("callButtons").innerHTML="";
-if(mode==="incoming"){
-const reject=document.createElement("button");reject.className="red";reject.textContent="✕";reject.onclick=()=>endCall(false);
-const accept=document.createElement("button");accept.className="green";accept.textContent="☎";accept.onclick=()=>{callAnswered=true;$("callStatus").textContent="通话中…";$("callButtons").innerHTML='<button class="red" id="hangup">✕ 挂断</button>';$("hangup").onclick=()=>endCall(true);};
-$("callButtons").append(reject,accept);
-}else{
-$("callButtons").innerHTML='<button class="red" id="hangup">✕ 挂断</button>';
-$("hangup").onclick=()=>endCall(true);
-callTimer=setTimeout(()=>{if(!$("callScreen").classList.contains("show"))return;if(!callAnswered){$("callStatus").textContent="暂时无人接听";setTimeout(()=>endCall(false),1000);}},12000);
+function endCall(status){
+  clearTimeout(callTimer);callState="idle";$("callMini").classList.add("hidden");addMessage("📞 "+status,"me");
 }
-$("callScreen").classList.add("show");
+function sendTransfer(){
+  const amount=Number($("amount").value);
+  if(!Number.isFinite(amount)||amount<=0){alert("请输入有效金额");return}
+  addMessage($("transferNote").value.trim()||"心意已送达","me",{type:"transfer",amount,status:"已发送"});
+  $("amount").value="";$("transferNote").value="";hidePanels();
+  setTimeout(()=>addMessage(Math.random()<.75?"对方已收取这份心意 💛":"对方暂时没有收取这份心意。","other"),2000+Math.random()*3000);
 }
-function endCall(userHungUp){
-clearTimeout(callTimer);$("callScreen").classList.remove("show");
-if(userHungUp&&chance(state.callbackProb)){
-setTimeout(()=>{if(state.autoAction)startCall("incoming");},1800);
-}
-}
-$("sendBtn").onclick=sendText;
-$("input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendText();}});
-$("input").addEventListener("input",e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,100)+"px";});
-$("menuBtn").onclick=()=>openPanel("menu");
-$("menuOpen").onclick=()=>openPanel("menu");
-$("back").onclick=()=>toast("已经在聊天页面啦");
-$("letterOpen").onclick=()=>openPanel("letter");
-$("emojiOpen").onclick=()=>openPanel("emoji");
-$("callOpen").onclick=()=>startCall("outgoing");
-$("callOpen").title="拨打电话";
-$$("[data-close]").forEach(b=>b.onclick=closePanels);
-$$("[data-panel]").forEach(b=>b.onclick=()=>openPanel(b.dataset.panel));
-$("saveSettings").onclick=saveSettings;
-["replyProb","activeProb","moneyProb","callProb","callbackProb"].forEach(k=>$(k).addEventListener("input",updateLabels));
-$("settingAvatarFile").addEventListener("change",e=>{
-const file=e.target.files[0];if(!file)return;
-if(file.size>1200000){toast("头像图片请控制在1.2MB以内");e.target.value="";return;}
-const reader=new FileReader();reader.onload=()=>{avatarData=reader.result;$("settingAvatarUrl").value="";};reader.readAsDataURL(file);
-});
+
+$("openMenu").onclick=()=>showPanel("menuPanel");
+$("openCards").onclick=()=>{renderCards();showPanel("cardsPanel")};
+$("openEmoji").onclick=()=>{renderEmojis();showPanel("emojiPanel")};
+$("openLetter").onclick=()=>showPanel("letterPanel");
+$("callMe").onclick=()=>showPanel("callPanel");
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=hidePanels);
+document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{if(b.dataset.open==="cardsPanel")renderCards();showPanel(b.dataset.open)});
+document.querySelectorAll("[data-theme-pick]").forEach(b=>b.onclick=()=>setTheme(b.dataset.themePick));
+$("send").onclick=()=>sendMyMessage($("input").value);
+$("input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMyMessage($("input").value)}});
+$("replyProb").oninput=()=>{$("replyLabel").textContent=$("replyProb").value+"%"};
+$("activeProb").oninput=()=>{$("activeLabel").textContent=$("activeProb").value+"%"};
+$("saveSettings").onclick=()=>{
+  d.replyProb=Number($("replyProb").value);d.activeProb=Number($("activeProb").value);
+  d.interval=Number($("interval").value);save();restartTimer();hidePanels();
+};
+$("saveProfile").onclick=()=>{
+  d.myName=$("myName").value.trim()||"我";d.myEmoji=$("myAvatarEmoji").value.trim()||"🍋";
+  d.myUrl=$("myAvatarUrl").value.trim()||d.myUrl;
+  d.otherName=$("otherName").value.trim()||"小猪";d.otherEmoji=$("otherAvatarEmoji").value.trim()||"🐺";
+  d.otherUrl=$("otherAvatarUrl").value.trim()||d.otherUrl;
+  save();updateProfile();renderMessages();hidePanels();
+};
+$("myAvatarFile").onchange=e=>readFile(e.target.files[0],url=>{d.myUrl=url;$("myAvatarUrl").value="";save();renderMessages()});
+$("otherAvatarFile").onchange=e=>readFile(e.target.files[0],url=>{d.otherUrl=url;$("otherAvatarUrl").value="";save();updateProfile();renderMessages()});
+$("newGroup").onclick=()=>{
+  const name=prompt("输入新分组名称，例如：撒娇、吃醋、晚安");
+  if(!name||!name.trim())return;
+  const g=name.trim();if(!d.groups.includes(g))d.groups.push(g);
+  save();renderGroups();$("cardGroup").value=g;
+};
 $("addCard").onclick=()=>{
-const title=$("cardTitle").value.trim(),content=$("cardContent").value.trim();
-if(!title||!content){toast("请填写标题和内容");return;}
-state.cards.push({title,content});$("cardTitle").value="";$("cardContent").value="";
-save();renderCards();toast("字卡已添加");
+  const text=$("cardText").value.trim();if(!text){alert("先写字卡内容哦");return}
+  const group=$("cardGroup").value||"日常";
+  d.cards.push({title:$("cardTitle").value.trim()||"字卡",text,group});
+  if(!d.groups.includes(group))d.groups.push(group);
+  save();$("cardTitle").value="";$("cardText").value="";renderCards();
 };
-$("sendTransfer").onclick=()=>{
-const amount=Number($("sendAmount").value),note=$("sendNote").value.trim()||"给你买奶茶";
-if(!Number.isFinite(amount)||amount<=0){toast("请输入正确金额");return;}
-addMessage("",true,"transfer",{amount:amount.toFixed(2),text:note,status:"待处理"});
-$("sendAmount").value="";$("sendNote").value="";closePanels();
-};
-$("sendLetter").onclick=()=>{
-const title=$("letterTitle").value.trim()||"写给你",text=$("letterContent").value.trim();
-if(!text){toast("写点想说的话吧");return;}
-addMessage(text,true,"letter",{title});$("letterTitle").value="";$("letterContent").value="";closePanels();randomReply();
-};
+$("filterGroup").onchange=renderCards;
 $("addEmoji").onclick=()=>{
-const s=$("newEmoji").value.trim();if(!s)return;
-[...s].filter(c=>!/\s/.test(c)).forEach(c=>{if(!state.emojis.includes(c))state.emojis.push(c);});
-$("newEmoji").value="";save();renderEmojis();
+  const e=$("newEmoji").value.trim();if(!e)return;
+  d.emojis.push(e);$("newEmoji").value="";save();renderEmojis();
 };
-$("clearChat").onclick=()=>{if(confirm("确定清空所有聊天记录吗？")){state.messages=[];save();render();closePanels();}};
-$("exportChat").onclick=()=>{
-const blob=new Blob([JSON.stringify(state.messages,null,2)],{type:"application/json"});
-const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="青柠私语聊天记录.json";a.click();URL.revokeObjectURL(a.href);
+$("sendTransfer").onclick=sendTransfer;
+$("sendLetter").onclick=()=>{
+  const text=$("letterText").value.trim();if(!text){alert("先写一点内容吧");return}
+  addMessage(text,"me",{type:"letter",title:$("letterTitle").value.trim()||"写给你"});
+  $("letterTitle").value="";$("letterText").value="";hidePanels();
+  if(Math.random()*100<Number(d.replyProb))setTimeout(replyCard,1500+Math.random()*2000);
 };
-$("theme").addEventListener("change",()=>{state.theme=$("theme").value;applySettings();});
-function activeMessage(){
-if(!state.autoAction||!chance(state.activeProb)||!state.cards.length)return;
-addMessage(randomItem(state.cards).content,false);
-}
-setInterval(activeMessage,30000);
-applySettings();loadSettings();render();renderCards();renderEmojis();
+$("startOutgoing").onclick=()=>{hidePanels();openCall("calling")};
+$("minimizeCall").onclick=()=>$("callMini").classList.add("hidden");
+
+document.body.dataset.theme=d.theme||"dark";
+$("replyProb").value=d.replyProb;$("activeProb").value=d.activeProb;
+$("replyLabel").textContent=d.replyProb+"%";$("activeLabel").textContent=d.activeProb+"%";
+$("interval").value=String(d.interval||30);
+$("myName").value=d.myName||"我";$("myAvatarEmoji").value=d.myEmoji||"🍋";
+$("myAvatarUrl").value=d.myUrl&&d.myUrl.startsWith("http")?d.myUrl:"";
+$("otherName").value=d.otherName||"小猪";$("otherAvatarEmoji").value=d.otherEmoji||"🐺";
+$("otherAvatarUrl").value=d.otherUrl&&d.otherUrl.startsWith("http")?d.otherUrl:"";
+updateProfile();renderMessages();renderCards();renderEmojis();restartTimer();
+if(!d.messages.length)addMessage("宝宝，我来啦。你可以给我发消息，或者看看字卡 ☘","other");
 })();
 </script>
 </body>
