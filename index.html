@@ -20,20 +20,24 @@ header{height:64px;display:flex;align-items:center;padding:0 15px;border-bottom:
 .headName{flex:1;min-width:0;font-weight:650}
 .sub{font-size:11px;color:var(--muted);margin-top:3px;font-weight:400}
 .iconBtn{border:0;background:transparent;color:var(--text);font-size:21px;padding:7px}
-.chat{flex:1;padding:17px 13px 20px;overflow:auto;min-height:50vh}
-
-/* 消息布局：对方头像左、气泡紧靠右侧；自己气泡左、头像紧靠右侧 */
+.chat{flex:1;padding:17px 13px 20px;overflow:auto;min-height:50vh;user-select:none;-webkit-user-select:none}
 .dayline{text-align:center;color:var(--muted);font-size:11px;margin:12px 0}
-.msg{display:flex;flex-direction:row;gap:8px;margin:14px 0;align-items:flex-end;min-width:0;width:100%}
+.msg{display:flex;flex-direction:row;gap:8px;margin:14px 0;align-items:flex-end;min-width:0;width:100%;position:relative}
 .msg.me{flex-direction:row-reverse}
 .msg .avatar{width:30px;height:30px;font-size:17px;flex:0 0 30px}
 .msg>div:not(.avatar){flex:0 1 auto;min-width:0;max-width:calc(100% - 38px)}
-.bubble{display:block;width:fit-content;min-width:2.8em;max-width:100%;box-sizing:border-box;padding:11px 13px;border-radius:15px;background:var(--other);color:var(--text);overflow-wrap:anywhere;word-break:normal;line-height:1.55;white-space:pre-wrap}
+.bubble{display:block;width:fit-content;min-width:2.8em;max-width:100%;box-sizing:border-box;padding:11px 13px;border-radius:15px;background:var(--other);color:var(--text);overflow-wrap:anywhere;word-break:normal;line-height:1.55;white-space:pre-wrap;touch-action:pan-y;cursor:pointer}
 .me .bubble{background:var(--mine);color:var(--mineText);border-bottom-right-radius:5px;border-bottom-left-radius:15px}
 .msg:not(.me) .bubble{border-bottom-left-radius:5px}
 .time{font-size:10px;color:var(--muted);margin:4px 5px 0}
 .me .time{text-align:right}
-
+.msg.selected .bubble{outline:2px solid var(--accent);outline-offset:2px}
+.msg.selected .bubble:before{content:"✓";display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#172017;font-size:12px;font-weight:bold;margin-right:6px;vertical-align:middle}
+.msg.selectable{cursor:pointer}
+.selectBar{display:flex;align-items:center;gap:8px;padding:8px 0 12px}
+.selectBar .selectCount{flex:1;font-size:13px;color:var(--muted)}
+.selectBar button{border:1px solid var(--line);background:var(--field);color:var(--text);border-radius:9px;padding:8px 10px;font-size:12px}
+.selectBar .deleteSelected{background:#d94e5c;color:white;border:0}
 .bar{background:var(--panel);border-top:1px solid var(--line);padding:10px 11px max(12px,env(safe-area-inset-bottom))}
 .tools{display:flex;gap:7px;overflow-x:auto;padding-bottom:9px}
 .tool{border:1px solid var(--line);background:var(--field);color:var(--text);border-radius:10px;padding:7px 11px;white-space:nowrap;font-size:12px}
@@ -48,6 +52,7 @@ header{height:64px;display:flex;align-items:center;padding:0 15px;border-bottom:
 .menuBtn,.btn{border:1px solid var(--line);background:var(--field);color:var(--text);border-radius:11px;padding:12px;text-align:left}
 .btn{display:inline-block;text-align:center;margin-top:10px}
 .primary{background:var(--accent);color:#182018;border:0}
+.danger{background:#d94e5c!important;color:white!important;border:0!important}
 label{display:block;font-size:13px;color:var(--muted);margin:14px 0 7px}
 .field{width:100%;border:1px solid var(--line);background:var(--field);color:var(--text);padding:11px;border-radius:10px;outline:none}
 textarea.field{resize:vertical;min-height:70px}
@@ -82,8 +87,15 @@ textarea.field{resize:vertical;min-height:70px}
   <div class="headName"><div id="headName">小猪</div><div class="sub">青柠私语 · 私人聊天空间</div></div>
   <button class="iconBtn" id="openMenu">☰</button>
 </header>
+
 <main class="chat" id="chat"></main>
+
 <footer class="bar">
+  <div class="selectBar hidden" id="selectBar">
+    <span class="selectCount" id="selectCount">已选择 0 条</span>
+    <button id="cancelSelect">取消</button>
+    <button class="deleteSelected" id="deleteSelected">删除所选</button>
+  </div>
   <div class="tools">
     <button class="tool" id="openCards">▤ 字卡</button>
     <button class="tool" id="openEmoji">☺ 表情</button>
@@ -105,7 +117,20 @@ textarea.field{resize:vertical;min-height:70px}
     <button class="menuBtn" data-open="transferPanel">￥ 给对方转账</button>
     <button class="menuBtn" data-open="letterPanel">✉ 写信</button>
     <button class="menuBtn" data-open="emojiPanel">☺ 表情管理</button>
+    <button class="menuBtn" data-open="recordsPanel">💾 备份与聊天记录</button>
   </div>
+</section>
+
+<section class="panel hidden" id="recordsPanel">
+  <div class="panelHead">备份与聊天记录 <button class="close" data-close>×</button></div>
+  <p class="note">备份文件包含聊天消息，可用于之后恢复聊天记录。不会删除你的主题、头像和字卡设置。</p>
+  <button class="btn primary" id="exportBackup">⬇ 导出聊天备份</button>
+  <label>从备份文件恢复聊天记录</label>
+  <input class="field" id="importBackup" type="file" accept=".json,application/json">
+  <p class="note">导入后会用备份中的聊天记录替换当前聊天记录，请先备份当前记录。</p>
+  <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+  <button class="btn danger" id="clearChat">清空全部聊天记录</button>
+  <p class="note">清空操作只删除聊天消息，不会删除字卡、表情、主题和头像设置。</p>
 </section>
 
 <section class="panel hidden" id="settingsPanel">
@@ -225,6 +250,7 @@ d.cards=Array.isArray(d.cards)?d.cards:base.cards.slice();
 d.emojis=Array.isArray(d.emojis)?d.emojis:base.emojis.slice();
 d.messages=Array.isArray(d.messages)?d.messages:[];
 let timer=null,callState="idle",callTimer=null;
+let selectedIds=new Set(),selectMode=false,longPressTimer=null,longPressTriggered=false;
 
 function save(){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){alert("本地空间不足，请换一张较小的头像图片。")}}
 function avatarContent(el,url,emoji){
@@ -242,16 +268,57 @@ function updateProfile(){
   $("callName").textContent=d.otherName;
 }
 function addMessage(text,who="other",extra={}){
+  d.chatCleared=false;
   d.messages.push({id:Date.now()+Math.random(),text,who,time:timeNow(),...extra});
   save();renderMessages();
+}
+function updateSelectBar(){
+  $("selectBar").classList.toggle("hidden",!selectMode);
+  $("selectCount").textContent="已选择 "+selectedIds.size+" 条";
+}
+function stopSelectMode(){
+  selectMode=false;selectedIds.clear();updateSelectBar();renderMessages();
+}
+function toggleSelected(id){
+  id=String(id);
+  if(selectedIds.has(id))selectedIds.delete(id);else selectedIds.add(id);
+  updateSelectBar();renderMessages();
+}
+function attachLongPress(row,bubble,message){
+  const id=String(message.id);
+  bubble.addEventListener("contextmenu",e=>{e.preventDefault()});
+  bubble.addEventListener("pointerdown",e=>{
+    if(e.pointerType==="mouse"&&e.button!==0)return;
+    longPressTriggered=false;
+    clearTimeout(longPressTimer);
+    longPressTimer=setTimeout(()=>{
+      longPressTriggered=true;
+      if(!selectMode){selectMode=true;selectedIds.clear();selectedIds.add(id);updateSelectBar();renderMessages()}
+      else toggleSelected(id);
+    },500);
+  });
+  const cancel=()=>clearTimeout(longPressTimer);
+  bubble.addEventListener("pointerup",cancel);
+  bubble.addEventListener("pointerleave",cancel);
+  bubble.addEventListener("pointercancel",cancel);
+  bubble.addEventListener("click",e=>{
+    if(longPressTriggered){e.preventDefault();e.stopPropagation();longPressTriggered=false;return}
+    if(selectMode){e.preventDefault();toggleSelected(id)}
+  });
 }
 function renderMessages(){
   const chat=$("chat");chat.replaceChildren();
   if(!d.messages.length){
-    const hello=document.createElement("div");hello.className="dayline";hello.textContent="青柠私语 · 聊天开始啦 ☘";chat.appendChild(hello);return;
+    if(!d.chatCleared){
+      const hello=document.createElement("div");hello.className="dayline";hello.textContent="青柠私语 · 聊天开始啦 ☘";chat.appendChild(hello);
+    }
+    updateSelectBar();return;
   }
   d.messages.forEach(m=>{
     const row=document.createElement("div");row.className="msg "+(m.who==="me"?"me":"");
+    const selected=selectedIds.has(String(m.id));
+    if(selected)row.classList.add("selected");
+    if(selectMode)row.classList.add("selectable");
     const av=document.createElement("div");av.className="avatar";
     avatarContent(av,m.who==="me"?d.myUrl:d.otherUrl,m.who==="me"?d.myEmoji:d.otherEmoji);
     const stack=document.createElement("div");stack.className="msgContent";
@@ -273,7 +340,9 @@ function renderMessages(){
     stack.appendChild(bubble);
     const tm=document.createElement("div");tm.className="time";tm.textContent=m.time||"";stack.appendChild(tm);
     row.append(av,stack);chat.appendChild(row);
+    attachLongPress(row,bubble,m);
   });
+  updateSelectBar();
   chat.scrollTop=chat.scrollHeight;
 }
 function sendMyMessage(text){
@@ -300,7 +369,7 @@ function renderGroups(){
 }
 function renderCards(){
   const previous=$("filterGroup").value||"__all";
-  renderGroups();$("filterGroup").value=d.groups.includes(previous)?previous:"__all";
+  renderGroups();$("filterGroup").value=(previous==="__all"||d.groups.includes(previous))?previous:"__all";
   const list=$("cardList");list.replaceChildren();
   const filter=$("filterGroup").value;
   d.cards.forEach((c,i)=>{
@@ -357,6 +426,70 @@ function sendTransfer(){
   $("amount").value="";$("transferNote").value="";hidePanels();
   setTimeout(()=>addMessage(Math.random()<.75?"对方已收取这份心意 💛":"对方暂时没有收取这份心意。","other"),2000+Math.random()*3000);
 }
+
+/* 新增：批量删除聊天消息 */
+$("cancelSelect").onclick=stopSelectMode;
+$("deleteSelected").onclick=()=>{
+  if(!selectedIds.size){alert("请先选择要删除的消息");return}
+  if(!confirm("确定删除选中的 "+selectedIds.size+" 条消息吗？此操作无法撤销。"))return;
+  d.messages=d.messages.filter(m=>!selectedIds.has(String(m.id)));
+  selectedIds.clear();selectMode=false;d.chatCleared=d.messages.length===0;
+  save();renderMessages();
+};
+
+/* 新增：导出聊天备份 JSON */
+$("exportBackup").onclick=()=>{
+  const backup={
+    app:"青柠私语",
+    version:1,
+    exportedAt:new Date().toISOString(),
+    messages:d.messages
+  };
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="青柠私语聊天备份_"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+
+/* 新增：从备份文件恢复聊天记录 */
+$("importBackup").onchange=async e=>{
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
+  try{
+    const parsed=JSON.parse(await file.text());
+    const messages=Array.isArray(parsed)?parsed:parsed.messages;
+    if(!Array.isArray(messages))throw new Error("文件中没有聊天记录");
+    if(!confirm("备份中有 "+messages.length+" 条消息。导入会替换当前聊天记录，确定继续吗？")){e.target.value="";return}
+    d.messages=messages.map((m,i)=>({
+      id:m.id??(Date.now()+i+Math.random()),
+      text:String(m.text??""),
+      who:m.who==="me"?"me":"other",
+      time:String(m.time??""),
+      ...(m.type?{type:m.type}:{}),
+      ...(m.title?{title:m.title}:{}),
+      ...(m.amount!==undefined?{amount:m.amount}:{}),
+      ...(m.status?{status:m.status}:{})
+    }));
+    d.chatCleared=d.messages.length===0;
+    selectedIds.clear();selectMode=false;
+    save();renderMessages();hidePanels();
+    alert("聊天记录恢复成功！");
+  }catch(err){
+    alert("备份文件无法读取，请选择青柠私语导出的 JSON 文件。");
+  }finally{e.target.value=""}
+};
+
+/* 新增：清空聊天记录，只影响 messages */
+$("clearChat").onclick=()=>{
+  if(!confirm("确定清空全部聊天记录吗？建议先导出备份。"))return;
+  if(!confirm("再次确认：清空后无法直接恢复，确定删除吗？"))return;
+  d.messages=[];d.chatCleared=true;
+  selectedIds.clear();selectMode=false;
+  save();renderMessages();hidePanels();
+};
 
 $("openMenu").onclick=()=>showPanel("menuPanel");
 $("openCards").onclick=()=>{renderCards();showPanel("cardsPanel")};
@@ -420,7 +553,7 @@ $("myAvatarUrl").value=d.myUrl&&d.myUrl.startsWith("http")?d.myUrl:"";
 $("otherName").value=d.otherName||"小猪";$("otherAvatarEmoji").value=d.otherEmoji||"🐺";
 $("otherAvatarUrl").value=d.otherUrl&&d.otherUrl.startsWith("http")?d.otherUrl:"";
 updateProfile();renderMessages();renderCards();renderEmojis();restartTimer();
-if(!d.messages.length)addMessage("宝宝，我来啦。你可以给我发消息，或者看看字卡 ☘","other");
+if(!d.messages.length&&!d.chatCleared)addMessage("宝宝，我来啦。你可以给我发消息，或者看看字卡 ☘","other");
 })();
 </script>
 </body>
